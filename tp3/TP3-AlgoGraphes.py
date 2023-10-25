@@ -15,9 +15,9 @@ def HuitReines(tab, ligne):
         for i in range(8):
             print(tab[i]+1,end = " ")
         print()
-        print("------------------------------")
+        print("------------------------------"     )
     else:
-        for colonne in range (8):
+        for colonne in range (8) :
             if est_valide(tab,ligne,colonne):
                 tab[ligne] = colonne
                 HuitReines(tab,ligne+1)
@@ -79,3 +79,5 @@ for solution in resultats:
     for row in solution:
         print(row)
     print()
+
+# %%
