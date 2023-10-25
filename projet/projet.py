@@ -1,5 +1,7 @@
 import networkx as nx
 import matplotlib.pyplot as plt
+import random 
+
 
 # -----------------------------------------------------------------------------
 # Graph tools
@@ -18,7 +20,7 @@ def visualiser_graphe(graph, coloration):
     G = nx.Graph(graph)
 
     # draw the graph with coloration 
-    pos = nx.spring_layout(G)  # Layout pour la disposition des noeuds
+    pos = nx.spring_layout(G)  
 
     # get list color for each vertex
     colors = [coloration[node] for node in G.nodes()]
@@ -76,7 +78,6 @@ def greedyColoring(adj, V):
 
     return result
 
-# To write the coloration 
 
 """
 
@@ -146,7 +147,6 @@ def WelshPowell(G):
     return d
 
 
-# To write the coloration 
 
 """
 coloration_welsh = WelshPowell(graph_liste_adjacence)
@@ -187,3 +187,69 @@ coloration_backtracking = graph_coloring_backtracking(graph_matrice_adjacence, n
 
 visualiser_graphe(graph_liste_adjacence, coloration_backtracking)
 """
+
+# -----------------------------------------------------------------------------
+# To design and implement in Python a coloring algorithm for the case 
+# of a dynamic graph where the number of vertices and edges evolve over time.
+# -----------------------------------------------------------------------------
+
+def modify_graph_dynamically(liste_adjacence):
+    n = len(liste_adjacence)
+    
+    # Choisissez une opération aléatoire : 0 pour ajouter, 1 pour supprimer, 2 pour modifier
+    operation = random.randint(0, 2)
+    
+    if operation == 0:  # Ajouter un lien
+        i = random.randint(0, n-1)
+        j = random.randint(0, n-1)
+        if j not in liste_adjacence[i]:
+            liste_adjacence[i].append(j)
+            liste_adjacence[j].append(i)
+            print(f"Ajout du lien entre le nœud {i} et le nœud {j}.")
+    
+    elif operation == 1:  # Supprimer un lien
+        i = random.randint(0, n-1)
+        if liste_adjacence[i]:
+            j = random.choice(liste_adjacence[i])
+            liste_adjacence[i].remove(j)
+            liste_adjacence[j].remove(i)
+            print(f"Suppression du lien entre le nœud {i} et le nœud {j}.")
+    
+    else:  # Modifier un lien
+        i = random.randint(0, n-1)
+        if liste_adjacence[i]:
+            j = random.choice(liste_adjacence[i])
+            if j != i:
+                if j not in liste_adjacence[i]:
+                    liste_adjacence[i].append(j)
+                    liste_adjacence[j].append(i)
+                    print(f"Ajout du lien entre le nœud {i} et le nœud {j}.")
+                else:
+                    liste_adjacence[i].remove(j)
+                    liste_adjacence[j].remove(i)
+                    print(f"Suppression du lien entre le nœud {i} et le nœud {j}.")
+
+    return liste_adjacence
+
+# Exemple d'utilisation
+graph_liste_adjacence = {
+    0: [1, 2, 3],
+    1: [0, 2],
+    2: [0, 1, 4, 5],
+    3: [0, 4, 6],
+    4: [2, 3],
+    5: [2, 6],
+    6: [3, 5]
+}
+
+
+# Définir les couleurs pour chaque nœud
+node_colors = ['red', 'blue', 'green', 'yellow', 'orange', 'purple', 'pink']
+
+# Utiliser les couleurs lors de la visualisation
+visualiser_graphe(graph_liste_adjacence, node_colors)
+
+
+new_graph_liste_adjacence = modify_graph_dynamically(graph_liste_adjacence)
+print(new_graph_liste_adjacence)
+visualiser_graphe(new_graph_liste_adjacence, node_colors)
