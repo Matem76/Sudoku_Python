@@ -112,7 +112,7 @@ def Voisinage(G, sommet):
     return G[sommet]
 
 def WelshPowell(G):
-    # Liste d'indices de couleurs
+    # colors list 
     couleurs = [0, 1, 2, 3, 4, 5]
     Ma = MAdjacence(G)
     sommets = Sommets(G)
@@ -196,10 +196,11 @@ visualiser_graphe(graph_liste_adjacence, coloration_backtracking)
 def modify_graph_dynamically(liste_adjacence):
     n = len(liste_adjacence)
     
-    # Choisissez une opération aléatoire : 0 pour ajouter, 1 pour supprimer, 2 pour modifier
+    # chosing an random operation:
+    # 0 to add, 1 to remove, 2 pour modify
     operation = random.randint(0, 2)
     
-    if operation == 0:  # Ajouter un lien
+    if operation == 0:  # add an link
         i = random.randint(0, n-1)
         j = random.randint(0, n-1)
         if j not in liste_adjacence[i]:
@@ -207,7 +208,7 @@ def modify_graph_dynamically(liste_adjacence):
             liste_adjacence[j].append(i)
             print(f"Ajout du lien entre le nœud {i} et le nœud {j}.")
     
-    elif operation == 1:  # Supprimer un lien
+    elif operation == 1:  # remove un link
         i = random.randint(0, n-1)
         if liste_adjacence[i]:
             j = random.choice(liste_adjacence[i])
@@ -215,7 +216,7 @@ def modify_graph_dynamically(liste_adjacence):
             liste_adjacence[j].remove(i)
             print(f"Suppression du lien entre le nœud {i} et le nœud {j}.")
     
-    else:  # Modifier un lien
+    else:  # modified an link
         i = random.randint(0, n-1)
         if liste_adjacence[i]:
             j = random.choice(liste_adjacence[i])
