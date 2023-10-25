@@ -158,36 +158,36 @@ visualiser_graphe(graph_liste_adjacence, coloration_welsh)
 # algorithm for graph coloring 
 # -----------------------------------------------------------------------------
 
-def is_safe(vertex, color, graph, color_assignment):
-    for i in range(len(graph)):
-        if graph[vertex][i] == 1 and color_assignment[i] == color:
+def is_safe(vertex, color, liste_adjacence, color_assignment):
+    for neighbor in liste_adjacence[vertex]:
+        if color_assignment[neighbor] == color:
             return False
     return True
 
-def graph_coloring_backtracking_util(graph, num_colors, color_assignment, vertex):
-    if vertex == len(graph):
+def graph_coloring_backtracking_util(liste_adjacence, num_colors, color_assignment, vertex):
+    if vertex == len(liste_adjacence):
         return True
 
     for color in range(1, num_colors+1):
-        if is_safe(vertex, color, graph, color_assignment):
+        if is_safe(vertex, color, liste_adjacence, color_assignment):
             color_assignment[vertex] = color
-            if graph_coloring_backtracking_util(graph, num_colors, color_assignment, vertex + 1):
+            if graph_coloring_backtracking_util(liste_adjacence, num_colors, color_assignment, vertex + 1):
                 return True
             color_assignment[vertex] = 0
 
-def graph_coloring_backtracking(graph, num_colors):
-    color_assignment = [0] * len(graph)
-    if not graph_coloring_backtracking_util(graph, num_colors, color_assignment, 0):
+def graph_coloring_backtracking(liste_adjacence, num_colors):
+    color_assignment = [0] * len(liste_adjacence)
+    if not graph_coloring_backtracking_util(liste_adjacence, num_colors, color_assignment, 0):
         return None
     return color_assignment
 
 """
 num_colors = 3
-coloration_backtracking = graph_coloring_backtracking(graph_matrice_adjacence, num_colors)
+coloration_backtracking = graph_coloring_backtracking(graph_liste_adjacence, num_colors)
 
 visualiser_graphe(graph_liste_adjacence, coloration_backtracking)
-"""
 
+"""
 # -----------------------------------------------------------------------------
 # To design and implement in Python a coloring algorithm for the case 
 # of a dynamic graph where the number of vertices and edges evolve over time.
@@ -231,25 +231,20 @@ def modify_graph_dynamically(liste_adjacence):
 
     return liste_adjacence
 
-# Exemple d'utilisation
-graph_liste_adjacence = {
-    0: [1, 2, 3],
-    1: [0, 2],
-    2: [0, 1, 4, 5],
-    3: [0, 4, 6],
-    4: [2, 3],
-    5: [2, 6],
-    6: [3, 5]
-}
 
+"""
+num_colors = 3
+coloration_backtracking = graph_coloring_backtracking(graph_liste_adjacence, num_colors)
 
-# Définir les couleurs pour chaque nœud
-node_colors = ['red', 'blue', 'green', 'yellow', 'orange', 'purple', 'pink']
+visualiser_graphe(graph_liste_adjacence, coloration_backtracking)
 
-# Utiliser les couleurs lors de la visualisation
-visualiser_graphe(graph_liste_adjacence, node_colors)
 
 
 new_graph_liste_adjacence = modify_graph_dynamically(graph_liste_adjacence)
 print(new_graph_liste_adjacence)
-visualiser_graphe(new_graph_liste_adjacence, node_colors)
+
+coloration_backtracking = graph_coloring_backtracking(new_graph_liste_adjacence, num_colors)
+
+visualiser_graphe(new_graph_liste_adjacence, coloration_backtracking)
+
+"""
