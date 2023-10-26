@@ -196,11 +196,30 @@ visualiser_graphe(graph_liste_adjacence, coloration_backtracking)
 def modify_graph_dynamically(liste_adjacence):
     n = len(liste_adjacence)
     
-    # chosing an random operation:
-    # 0 to add, 1 to remove, 2 pour modify
-    operation = random.randint(0, 2)
+    # chosing a random operation:
+    # 0 to add node, 1 to remove node, 2 to add edge, 3 to remove edge, 4 to modify edge
+    operation = random.randint(0, 4)
     
-    if operation == 0:  # add an link
+    if operation == 0:  # add a node
+        new_node = n
+        new_neighbors = random.sample(range(n), random.randint(1, n//2))
+        liste_adjacence[new_node] = new_neighbors
+        for neighbor in new_neighbors:
+            liste_adjacence[neighbor].append(new_node)
+        print(f"Ajout du nœud {new_node} avec des voisins {new_neighbors}.")
+    
+    elif operation == 1:  # remove a node
+        if n > 1:
+            node_to_remove = random.randint(0, n-1)
+            neighbors = liste_adjacence[node_to_remove]
+            for neighbor in neighbors:
+                liste_adjacence[neighbor].remove(node_to_remove)
+                if neighbor in liste_adjacence:
+                    liste_adjacence[neighbor] = [x for x in liste_adjacence[neighbor] if x != node_to_remove]
+            del liste_adjacence[node_to_remove]
+            print(f"Suppression du nœud {node_to_remove} et de ses liens.")
+    
+    elif operation == 2:  # add an edge
         i = random.randint(0, n-1)
         j = random.randint(0, n-1)
         if j not in liste_adjacence[i]:
@@ -208,7 +227,7 @@ def modify_graph_dynamically(liste_adjacence):
             liste_adjacence[j].append(i)
             print(f"Ajout du lien entre le nœud {i} et le nœud {j}.")
     
-    elif operation == 1:  # remove un link
+    elif operation == 3:  # remove an edge
         i = random.randint(0, n-1)
         if liste_adjacence[i]:
             j = random.choice(liste_adjacence[i])
@@ -216,7 +235,7 @@ def modify_graph_dynamically(liste_adjacence):
             liste_adjacence[j].remove(i)
             print(f"Suppression du lien entre le nœud {i} et le nœud {j}.")
     
-    else:  # modified an link
+    else:  # modify an edge
         i = random.randint(0, n-1)
         if liste_adjacence[i]:
             j = random.choice(liste_adjacence[i])
@@ -246,6 +265,4 @@ print(new_graph_liste_adjacence)
 
 coloration_backtracking = graph_coloring_backtracking(new_graph_liste_adjacence, num_colors)
 
-visualiser_graphe(new_graph_liste_adjacence, coloration_backtracking)
-
-"""
+visualiser_graphe(new_graph_liste_adjacence, coloration_backtracking)"""
