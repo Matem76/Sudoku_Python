@@ -193,11 +193,9 @@ visualiser_graphe(graph_liste_adjacence, coloration_backtracking)
 # of a dynamic graph where the number of vertices and edges evolve over time.
 # -----------------------------------------------------------------------------
 
+
 def modify_graph_dynamically(liste_adjacence):
     n = len(liste_adjacence)
-    
-    # chosing a random operation:
-    # 0 to add node, 1 to remove node, 2 to add edge, 3 to remove edge, 4 to modify edge
     operation = random.randint(0, 4)
     
     if operation == 0:  # add a node
@@ -248,8 +246,18 @@ def modify_graph_dynamically(liste_adjacence):
                     liste_adjacence[i].remove(j)
                     liste_adjacence[j].remove(i)
                     print(f"Suppression du lien entre le nœud {i} et le nœud {j}.")
-
     return liste_adjacence
+
+
+def observe_graph_evolution(initial_graph, num_iterations, num_colors):
+    current_graph = initial_graph.copy()
+    for _ in range(num_iterations):
+        current_graph = modify_graph_dynamically(current_graph)
+        coloration_backtracking = graph_coloring_backtracking(current_graph, num_colors)
+        visualiser_graphe(current_graph, coloration_backtracking)
+
+num_colors = 3
+observe_graph_evolution(graph_liste_adjacence, 4, num_colors)
 
 
 """
@@ -266,3 +274,5 @@ print(new_graph_liste_adjacence)
 coloration_backtracking = graph_coloring_backtracking(new_graph_liste_adjacence, num_colors)
 
 visualiser_graphe(new_graph_liste_adjacence, coloration_backtracking)"""
+
+
