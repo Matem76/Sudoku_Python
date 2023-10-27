@@ -43,7 +43,7 @@ graph_matrice_adjacence = [
 # Convert the matrice to an adjacence list 
 graph_liste_adjacence = matrice_adjacence_to_liste_adjacence(graph_matrice_adjacence)
 
-
+print(graph_liste_adjacence)
 # -----------------------------------------------------------------------------
 # Python3 program to implement greedy 
 # algorithm for graph coloring 
@@ -79,15 +79,15 @@ def greedyColoring(adj, V):
     return result
 
 
-"""
 
+"""
 # using greedy algorithm to colorize the graph
 coloration_glouton = greedyColoring(graph_liste_adjacence, len(graph_liste_adjacence))
 
 # Visualize the graph 
 visualiser_graphe(graph_liste_adjacence, coloration_glouton)
-
 """
+
 # -----------------------------------------------------------------------------
 # Python3 program to implement welsh-Powell
 # algorithm for graph coloring 
@@ -159,8 +159,9 @@ visualiser_graphe(graph_liste_adjacence, coloration_welsh)
 # -----------------------------------------------------------------------------
 
 def is_safe(vertex, color, liste_adjacence, color_assignment):
-    for neighbor in liste_adjacence[vertex]:
-        if color_assignment[neighbor] == color:
+    neighbors = liste_adjacence.get(vertex, [])
+    for neighbor in neighbors:
+        if color_assignment.get(neighbor, None) == color:
             return False
     return True
 
@@ -176,7 +177,10 @@ def graph_coloring_backtracking_util(liste_adjacence, num_colors, color_assignme
             color_assignment[vertex] = 0
 
 def graph_coloring_backtracking(liste_adjacence, num_colors):
-    color_assignment = [0] * len(liste_adjacence)
+    if liste_adjacence is None:
+        return None
+        
+    color_assignment = {vertex: 0 for vertex in liste_adjacence.keys()}
     if not graph_coloring_backtracking_util(liste_adjacence, num_colors, color_assignment, 0):
         return None
     return color_assignment
@@ -186,35 +190,44 @@ num_colors = 3
 coloration_backtracking = graph_coloring_backtracking(graph_liste_adjacence, num_colors)
 
 visualiser_graphe(graph_liste_adjacence, coloration_backtracking)
-
 """
+
 # -----------------------------------------------------------------------------
 # To design and implement in Python a coloring algorithm for the case 
 # of a dynamic graph where the number of vertices and edges evolve over time.
 # -----------------------------------------------------------------------------
 
 
+def remove_node(graph_liste_adjacence, noeud):
+    if noeud in graph_liste_adjacence:
+        voisins = graph_liste_adjacence[noeud]
+        del graph_liste_adjacence[noeud]
+        
+        for voisin in voisins:
+            if voisin in graph_liste_adjacence:
+                graph_liste_adjacence[voisin] = [x for x in graph_liste_adjacence[voisin] if x != noeud]
+        
+        return graph_liste_adjacence
+    else:
+        print(f"Le nœud {noeud} n'existe pas dans la liste d'adjacence.")
+        return None
+
 def modify_graph_dynamically(liste_adjacence):
     n = len(liste_adjacence)
     operation = random.randint(0, 4)
     
     if operation == 0:  # add a node
-        new_node = n
         new_neighbors = random.sample(range(n), random.randint(1, n//2))
-        liste_adjacence[new_node] = new_neighbors
+        liste_adjacence[n] = new_neighbors
         for neighbor in new_neighbors:
-            liste_adjacence[neighbor].append(new_node)
-        print(f"Ajout du nœud {new_node} avec des voisins {new_neighbors}.")
-    
+            liste_adjacence[neighbor].append(n)
+        print(f"Ajout du nœud {n} avec des voisins {new_neighbors}.")
+        n = len(liste_adjacence)  # Mettez à jour n après l'ajout du nœud
+        
     elif operation == 1:  # remove a node
         if n > 1:
             node_to_remove = random.randint(0, n-1)
-            neighbors = liste_adjacence[node_to_remove]
-            for neighbor in neighbors:
-                liste_adjacence[neighbor].remove(node_to_remove)
-                if neighbor in liste_adjacence:
-                    liste_adjacence[neighbor] = [x for x in liste_adjacence[neighbor] if x != node_to_remove]
-            del liste_adjacence[node_to_remove]
+            liste_adjacence = remove_node(liste_adjacence, node_to_remove)
             print(f"Suppression du nœud {node_to_remove} et de ses liens.")
     
     elif operation == 2:  # add an edge
@@ -246,33 +259,26 @@ def modify_graph_dynamically(liste_adjacence):
                     liste_adjacence[i].remove(j)
                     liste_adjacence[j].remove(i)
                     print(f"Suppression du lien entre le nœud {i} et le nœud {j}.")
+
     return liste_adjacence
+
 
 
 def observe_graph_evolution(initial_graph, num_iterations, num_colors):
     current_graph = initial_graph.copy()
+    coloration_backtracking = graph_coloring_backtracking(current_graph, num_colors)
+    visualiser_graphe(current_graph, coloration_backtracking)
     for _ in range(num_iterations):
         current_graph = modify_graph_dynamically(current_graph)
+        if(current_graph == None):
+            break
         coloration_backtracking = graph_coloring_backtracking(current_graph, num_colors)
         visualiser_graphe(current_graph, coloration_backtracking)
+
+
 
 num_colors = 3
 observe_graph_evolution(graph_liste_adjacence, 4, num_colors)
 
-
-"""
-num_colors = 3
-coloration_backtracking = graph_coloring_backtracking(graph_liste_adjacence, num_colors)
-
-visualiser_graphe(graph_liste_adjacence, coloration_backtracking)
-
-
-
-new_graph_liste_adjacence = modify_graph_dynamically(graph_liste_adjacence)
-print(new_graph_liste_adjacence)
-
-coloration_backtracking = graph_coloring_backtracking(new_graph_liste_adjacence, num_colors)
-
-visualiser_graphe(new_graph_liste_adjacence, coloration_backtracking)"""
 
 
