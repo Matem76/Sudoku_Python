@@ -165,25 +165,30 @@ def is_safe(vertex, color, liste_adjacence, color_assignment):
             return False
     return True
 
-def graph_coloring_backtracking_util(liste_adjacence, num_colors, color_assignment, vertex):
-    if vertex == len(liste_adjacence):
-        return True
-
-    for color in range(1, num_colors+1):
-        if is_safe(vertex, color, liste_adjacence, color_assignment):
-            color_assignment[vertex] = color
-            if graph_coloring_backtracking_util(liste_adjacence, num_colors, color_assignment, vertex + 1):
-                return True
-            color_assignment[vertex] = 0
-
 def graph_coloring_backtracking(liste_adjacence, num_colors):
     if liste_adjacence is None:
         return None
-        
+
     color_assignment = {vertex: 0 for vertex in liste_adjacence.keys()}
-    if not graph_coloring_backtracking_util(liste_adjacence, num_colors, color_assignment, 0):
+    vertices = list(liste_adjacence.keys())
+    vertices.sort(key=lambda x: len(liste_adjacence[x]), reverse=True)
+    def graph_coloring_backtracking_util(vertex):
+        if vertex == len(vertices):
+            return True
+
+        for color in range(1, num_colors+1):
+            if is_safe(vertices[vertex], color, liste_adjacence, color_assignment):
+                color_assignment[vertices[vertex]] = color
+                if graph_coloring_backtracking_util(vertex + 1):
+                    return True
+                color_assignment[vertices[vertex]] = 0
+
+        return False
+
+    if not graph_coloring_backtracking_util(0):
         return None
     return color_assignment
+
 
 """
 num_colors = 3
@@ -202,33 +207,36 @@ def remove_node(graph_liste_adjacence, noeud):
     if noeud in graph_liste_adjacence:
         voisins = graph_liste_adjacence[noeud]
         del graph_liste_adjacence[noeud]
-        
+
         for voisin in voisins:
             if voisin in graph_liste_adjacence:
                 graph_liste_adjacence[voisin] = [x for x in graph_liste_adjacence[voisin] if x != noeud]
-        
+
         return graph_liste_adjacence
     else:
         print(f"The node {noeud} does not exist in the adjacency list.")
         return None
 
+
 def modify_graph_dynamically(liste_adjacence):
     n = len(liste_adjacence)
-    operation = random.randint(0, 4)
-    
+    operation = random.randint(1, 1)
+
     if operation == 0:  # add a node
         new_neighbors = random.sample(range(n), random.randint(1, n//2))
         liste_adjacence[n] = new_neighbors
         for neighbor in new_neighbors:
             liste_adjacence[neighbor].append(n)
-        print(f"Adding node {n} with neighbors {new_neighbors}.")
+        print(f"Adding the Node  {n} with his neighbors {new_neighbors}.")
         n = len(liste_adjacence)  # Mettez à jour n après l'ajout du nœud
-        
+
     elif operation == 1:  # remove a node
         if n > 1:
             node_to_remove = random.randint(0, n-1)
+            while node_to_remove not in liste_adjacence:
+                node_to_remove = random.randint(0, n-1)
             liste_adjacence = remove_node(liste_adjacence, node_to_remove)
-            print(f"Removing node {node_to_remove} and his links .")
+            print(f"Remove the node {node_to_remove} and his links .")
     
     elif operation == 2:  # add an edge
         i = random.randint(0, n-1)
@@ -277,8 +285,41 @@ def observe_graph_evolution(initial_graph, num_iterations, num_colors):
 
 
 
-num_colors = 3
+num_colors = 7
 observe_graph_evolution(graph_liste_adjacence, 4, num_colors)
 
 
+# -----------------------------------------------------------------------------
+#To use the implemented algorithms to develop an application that
+# allows coloring a user-provided graph and solving a Sudoku grid using
+# a coloring algorithm."
+# ----------------------------------------------------------------------------
+
+"""
+def get_sudoku_grid():
+    print("Please enter the 4x4 Sudoku grid (use '0' for empty cells):")
+    grid = []
+    for _ in range(4):
+        row = list(map(int, input().split()))
+        grid.append(row)
+    return grid
+
+def display_sudoku(grid):
+    print("+-----+-----+")
+    for i in range(4):
+        for j in range(4):
+            if j % 2 == 0:
+                print("|", end=" ")
+            if grid[i][j] == 0:
+                print(".", end=" ")
+            else:
+                print(grid[i][j], end=" ")
+        print("|")
+        if (i + 1) % 2 == 0:
+            print("+-----+-----+")
+
+
+sudoku_grid = get_sudoku_grid()
+
+display_sudoku(sudoku_grid)"""
 
