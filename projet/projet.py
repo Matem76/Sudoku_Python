@@ -220,7 +220,7 @@ def remove_node(graph_liste_adjacence, noeud):
 
 def modify_graph_dynamically(liste_adjacence):
     n = len(liste_adjacence)
-    operation = random.randint(1, 1)
+    operation = random.randint(0, 4)
 
     if operation == 0:  # add a node
         new_neighbors = random.sample(range(n), random.randint(1, n//2))
@@ -284,10 +284,10 @@ def observe_graph_evolution(initial_graph, num_iterations, num_colors):
         visualiser_graphe(current_graph, coloration_backtracking)
 
 
-
+"""
 num_colors = 7
 observe_graph_evolution(graph_liste_adjacence, 4, num_colors)
-
+"""
 
 # -----------------------------------------------------------------------------
 #To use the implemented algorithms to develop an application that
@@ -295,7 +295,7 @@ observe_graph_evolution(graph_liste_adjacence, 4, num_colors)
 # a coloring algorithm."
 # ----------------------------------------------------------------------------
 
-"""
+
 def get_sudoku_grid():
     print("Please enter the 4x4 Sudoku grid (use '0' for empty cells):")
     grid = []
@@ -319,7 +319,38 @@ def display_sudoku(grid):
             print("+-----+-----+")
 
 
+def sudoku_to_graph(sudoku_grid):
+    graph = {}
+
+    # Ajouter les sommets (cellules) au graphe
+    for i in range(4):
+        for j in range(4):
+            if sudoku_grid[i][j] == 0:
+                neighbors = [(i, k) for k in range(4)] + [(k, j) for k in range(4)]
+                neighbors = [(x, y) for x, y in neighbors if (x, y) != (i, j)]
+                graph[(i, j)] = neighbors
+
+    return graph
+
+# Étape 2: Colorier le graphe
+def color_sudoku(sudoku_grid):
+    graph = sudoku_to_graph(sudoku_grid)
+    num_colors = 4  # Il y a 4 couleurs dans un Sudoku 4x4
+
+    # Utiliser l'algorithme de coloration
+    coloration = graph_coloring_backtracking(graph, num_colors)
+
+    # Remplacer les zéros dans la grille de Sudoku par les couleurs attribuées
+    for i in range(4):
+        for j in range(4):
+            if sudoku_grid[i][j] == 0:
+                sudoku_grid[i][j] = coloration.get((i, j), 0) + 1  # Ajouter 1 car les couleurs commencent à 1
+
+    return sudoku_grid
+
 sudoku_grid = get_sudoku_grid()
 
-display_sudoku(sudoku_grid)"""
+display_sudoku(sudoku_grid)
 
+sudoku_solution = color_sudoku(sudoku_grid)
+display_sudoku(sudoku_solution)
