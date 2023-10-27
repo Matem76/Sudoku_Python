@@ -209,7 +209,7 @@ def remove_node(graph_liste_adjacence, noeud):
         
         return graph_liste_adjacence
     else:
-        print(f"Le nœud {noeud} n'existe pas dans la liste d'adjacence.")
+        print(f"The node {noeud} does not exist in the adjacency list.")
         return None
 
 def modify_graph_dynamically(liste_adjacence):
@@ -221,14 +221,14 @@ def modify_graph_dynamically(liste_adjacence):
         liste_adjacence[n] = new_neighbors
         for neighbor in new_neighbors:
             liste_adjacence[neighbor].append(n)
-        print(f"Ajout du nœud {n} avec des voisins {new_neighbors}.")
+        print(f"Adding node {n} with neighbors {new_neighbors}.")
         n = len(liste_adjacence)  # Mettez à jour n après l'ajout du nœud
         
     elif operation == 1:  # remove a node
         if n > 1:
             node_to_remove = random.randint(0, n-1)
             liste_adjacence = remove_node(liste_adjacence, node_to_remove)
-            print(f"Suppression du nœud {node_to_remove} et de ses liens.")
+            print(f"Removing node {node_to_remove} and his links .")
     
     elif operation == 2:  # add an edge
         i = random.randint(0, n-1)
@@ -236,7 +236,7 @@ def modify_graph_dynamically(liste_adjacence):
         if j not in liste_adjacence[i]:
             liste_adjacence[i].append(j)
             liste_adjacence[j].append(i)
-            print(f"Ajout du lien entre le nœud {i} et le nœud {j}.")
+            print(f"Adding link between the node {i} and the node {j}.")
     
     elif operation == 3:  # remove an edge
         i = random.randint(0, n-1)
@@ -244,7 +244,7 @@ def modify_graph_dynamically(liste_adjacence):
             j = random.choice(liste_adjacence[i])
             liste_adjacence[i].remove(j)
             liste_adjacence[j].remove(i)
-            print(f"Suppression du lien entre le nœud {i} et le nœud {j}.")
+            print(f"Removing node link between the node  {i} and the node {j}.")
     
     else:  # modify an edge
         i = random.randint(0, n-1)
@@ -254,11 +254,11 @@ def modify_graph_dynamically(liste_adjacence):
                 if j not in liste_adjacence[i]:
                     liste_adjacence[i].append(j)
                     liste_adjacence[j].append(i)
-                    print(f"Ajout du lien entre le nœud {i} et le nœud {j}.")
+                    print(f"Adding link between the node {i} and the node {j}.")
                 else:
                     liste_adjacence[i].remove(j)
                     liste_adjacence[j].remove(i)
-                    print(f"Suppression du lien entre le nœud {i} et le nœud {j}.")
+                    print(f"Removing node link between the node {i} and the node {j}.")
 
     return liste_adjacence
 
