@@ -297,60 +297,104 @@ observe_graph_evolution(graph_liste_adjacence, 4, num_colors)
 
 
 def get_sudoku_grid():
-    print("Please enter the 4x4 Sudoku grid (use '0' for empty cells):")
+    print("Please enter the 9x9 Sudoku grid (use '0' for empty cells):")
     grid = []
-    for _ in range(4):
+    for _ in range(9):
         row = list(map(int, input().split()))
         grid.append(row)
     return grid
 
 def display_sudoku(grid):
-    print("+-----+-----+")
-    for i in range(4):
-        for j in range(4):
-            if j % 2 == 0:
+    print("+-------+-------+-------+")
+    for i in range(9):
+        for j in range(9):
+            if j % 3 == 0:
                 print("|", end=" ")
             if grid[i][j] == 0:
                 print(".", end=" ")
             else:
                 print(grid[i][j], end=" ")
         print("|")
-        if (i + 1) % 2 == 0:
-            print("+-----+-----+")
-
+        if (i + 1) % 3 == 0:
+            print("+-------+-------+-------+")
 
 def sudoku_to_graph(sudoku_grid):
     graph = {}
 
-    # Ajouter les sommets (cellules) au graphe
-    for i in range(4):
-        for j in range(4):
+    def get_box_indices(i, j):
+        box_start_row = (i // 3) * 3
+        box_start_col = (j // 3) * 3
+        return [(box_start_row + x, box_start_col + y) for x in range(3) for y in range(3)]
+
+    for i in range(9):
+        for j in range(9):
             if sudoku_grid[i][j] == 0:
-                neighbors = [(i, k) for k in range(4)] + [(k, j) for k in range(4)]
+                neighbors = [(i, k) for k in range(9)] + [(k, j) for k in range(9)]
                 neighbors = [(x, y) for x, y in neighbors if (x, y) != (i, j)]
+                neighbors += get_box_indices(i, j)
+                neighbors = list(set(neighbors))
                 graph[(i, j)] = neighbors
 
     return graph
 
-# Étape 2: Colorier le graphe
-def color_sudoku(sudoku_grid):
-    graph = sudoku_to_graph(sudoku_grid)
-    num_colors = 4  # Il y a 4 couleurs dans un Sudoku 4x4
+def is_safe(vertex, color, liste_adjacence, color_assignment):
+    neighbors = liste_adjacence.get(vertex, [])
+    for neighbor in neighbors:
+        if color_assignment.get(neighbor, None) == color:
+            return False
+    return True
 
-    # Utiliser l'algorithme de coloration
+def graph_coloring_backtracking(liste_adjacence, num_colors):
+    if liste_adjacence is None:
+        return None
+
+    color_assignment = {vertex: 0 for vertex in liste_adjacence.keys()}
+    vertices = list(liste_adjacence.keys())
+
+    def graph_coloring_backtracking_util(vertex):
+        if vertex == len(vertices):
+            return True
+
+        for color in range(1, num_colors+1):
+            if is_safe(vertices[vertex], color, liste_adjacence, color_assignment):
+                color_assignment[vertices[vertex]] = color
+                if graph_coloring_backtracking_util(vertex + 1):
+                    return True
+                color_assignment[vertices[vertex]] = 0
+
+        return False
+
+    if not graph_coloring_backtracking_util(0):
+        return None
+    return color_assignment
+
+def solve_sudoku_with_colors(sudoku_grid):
+    graph = sudoku_to_graph(sudoku_grid)
+    num_colors = 9
+
     coloration = graph_coloring_backtracking(graph, num_colors)
 
-    # Remplacer les zéros dans la grille de Sudoku par les couleurs attribuées
-    for i in range(4):
-        for j in range(4):
-            if sudoku_grid[i][j] == 0:
-                sudoku_grid[i][j] = coloration.get((i, j), 0) + 1  # Ajouter 1 car les couleurs commencent à 1
+    if coloration is not None:
+        for i in range(9):
+            for j in range(9):
+                if sudoku_grid[i][j] == 0:
+                    sudoku_grid[i][j] = coloration.get((i, j), 0)
 
     return sudoku_grid
 
-sudoku_grid = get_sudoku_grid()
+sudo = [
+    [5, 3, 0, 0, 7, 0, 0, 0, 0],
+    [6, 0, 0, 1, 9, 5, 0, 0, 0],
+    [0, 9, 8, 0, 0, 0, 0, 6, 0],
+    [8, 0, 0, 0, 6, 0, 0, 0, 3],
+    [4, 0, 0, 8, 0, 3, 0, 0, 1],
+    [7, 0, 0, 0, 2, 0, 0, 0, 6],
+    [0, 6, 0, 0, 0, 0, 2, 8, 0],
+    [0, 0, 0, 4, 1, 9, 0, 0, 5],
+    [0, 0, 0, 0, 8, 0, 0, 7, 9]
+]
 
-display_sudoku(sudoku_grid)
+display_sudoku(sudo)
 
-sudoku_solution = color_sudoku(sudoku_grid)
-display_sudoku(sudoku_solution)
+sudo_result = solve_sudoku_with_colors(sudo)
+display_sudoku(sudo_result)
