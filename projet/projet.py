@@ -16,6 +16,20 @@ def matrice_adjacence_to_liste_adjacence(matrice):
         liste_adjacence[i] = voisins
     return liste_adjacence
 
+def liste_adjacence_to_matrice_adjacence(liste_adjacence):
+    # Trouver le nombre de sommets dans le graphe
+    nb_sommets = len(liste_adjacence)
+
+    # Initialiser une matrice d'adjacence remplie de zéros
+    matrice_adjacence = [[0] * nb_sommets for _ in range(nb_sommets)]
+
+    # Remplir la matrice d'adjacence en fonction de la liste d'adjacence
+    for sommet, voisins in liste_adjacence.items():
+        for voisin in voisins:
+            matrice_adjacence[sommet][voisin] = 1
+
+    return matrice_adjacence
+
 
 def visualiser_graphe(graph, coloration):
     # create an graph
@@ -290,18 +304,21 @@ def modify_graph_dynamically(liste_adjacence):
 
 def observe_graph_evolution(initial_graph, num_iterations, num_colors):
     current_graph = initial_graph.copy()
-    coloration_backtracking = graph_coloring_backtracking(current_graph, num_colors)
-    visualiser_graphe(current_graph, coloration_backtracking)
+    graph_matrice_adjacence = liste_adjacence_to_matrice_adjacence(current_graph)
+    g = Graph(len(graph_matrice_adjacence))
+    g.graph = graph_matrice_adjacence
+    visualiser_graphe(current_graph,g.graphColouring(num_colors))
     for _ in range(num_iterations):
         current_graph = modify_graph_dynamically(current_graph)
         if current_graph == None:
             break
-        coloration_backtracking = graph_coloring_backtracking(current_graph, num_colors)
-        visualiser_graphe(current_graph, coloration_backtracking)
-
+        graph_matrice_adjacence = liste_adjacence_to_matrice_adjacence(current_graph)
+        g = Graph(len(graph_matrice_adjacence))
+        g.graph = graph_matrice_adjacence
+        visualiser_graphe(current_graph,g.graphColouring(num_colors))
 
 """
-num_colors = 7
+num_colors = 3
 observe_graph_evolution(graph_liste_adjacence, 4, num_colors)
 """
 
@@ -358,50 +375,45 @@ def sudoku_to_graph(sudoku_grid):
     return graph
 
 
-def is_safe(vertex, color, liste_adjacence, color_assignment):
-    neighbors = liste_adjacence.get(vertex, [])
-    for neighbor in neighbors:
-        if color_assignment.get(neighbor, None) == color:
-            return False
-    return True
 
 
-def graph_coloring_backtracking(liste_adjacence, num_colors):
-    if liste_adjacence is None:
-        return None
 
-    color_assignment = {vertex: 0 for vertex in liste_adjacence.keys()}
-    vertices = list(liste_adjacence.keys())
-
-    def graph_coloring_backtracking_util(vertex):
-        if vertex == len(vertices):
-            return True
-
-        for color in range(1, num_colors + 1):
-            if is_safe(vertices[vertex], color, liste_adjacence, color_assignment):
-                color_assignment[vertices[vertex]] = color
-                if graph_coloring_backtracking_util(vertex + 1):
-                    return True
-                color_assignment[vertices[vertex]] = 0
-
-        return False
-
-    if not graph_coloring_backtracking_util(0):
-        return None
-    return color_assignment
 
 
 def solve_sudoku_with_colors(sudoku_grid):
+    def sudoku_to_graph(sudoku_grid):
+        graph = Graph(81)  # 9x9 Sudoku has 81 cells
+
+        def get_box_indices(i, j):
+            box_start_row = (i // 3) * 3
+            box_start_col = (j // 3) * 3
+            return [
+                (box_start_row + x, box_start_col + y) for x in range(3) for y in range(3)
+            ]
+
+        for i in range(9):
+            for j in range(9):
+                if sudoku_grid[i][j] == 0:
+                    neighbors = [(i, k) for k in range(9)] + [(k, j) for k in range(9)]
+                    neighbors = [(x, y) for x, y in neighbors if (x, y) != (i, j)]
+                    neighbors += get_box_indices(i, j)
+                    neighbors = list(set(neighbors))
+                    graph.graph[i * 9 + j][i * 9 + j] = 1  # Node to itself
+                    for x, y in neighbors:
+                        graph.graph[i * 9 + j][x * 9 + y] = 1
+
+        return graph
+
     graph = sudoku_to_graph(sudoku_grid)
     num_colors = 9
 
-    coloration = graph_coloring_backtracking(graph, num_colors)
+    coloration = graph.graphColouring(num_colors)
 
     if coloration is not None:
         for i in range(9):
             for j in range(9):
                 if sudoku_grid[i][j] == 0:
-                    sudoku_grid[i][j] = coloration.get((i, j), 0)
+                    sudoku_grid[i][j] = coloration[i * 9 + j]
 
     return sudoku_grid
 
@@ -417,10 +429,9 @@ sudo = [
     [0, 0, 0, 4, 1, 9, 0, 0, 5],
     [0, 0, 0, 0, 8, 0, 0, 7, 9],
 ]
-"""
+
 display_sudoku(sudo)
 
 sudo_result = solve_sudoku_with_colors(sudo)
 display_sudoku(sudo_result)
 
-"""
