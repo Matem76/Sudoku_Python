@@ -185,7 +185,6 @@ visualiser_graphe(graph_liste_adjacence, coloration_welsh)
 # algorithm for graph coloring
 # -----------------------------------------------------------------------------
 
-
 class Graph():
  
     def __init__(self, vertices):
@@ -220,7 +219,7 @@ class Graph():
         if self.graphColourUtil(m, colour, 0) == None:
             return False
         return colour
-"""    
+"""
 g = Graph(len(graph_matrice_adjacence))
 g.graph = graph_matrice_adjacence
 m = 3
@@ -353,72 +352,9 @@ def display_sudoku(grid):
             print("+-------+-------+-------+")
 
 
-def sudoku_to_graph(sudoku_grid):
-    graph = {}
+   
 
-    def get_box_indices(i, j):
-        box_start_row = (i // 3) * 3
-        box_start_col = (j // 3) * 3
-        return [
-            (box_start_row + x, box_start_col + y) for x in range(3) for y in range(3)
-        ]
-
-    for i in range(9):
-        for j in range(9):
-            if sudoku_grid[i][j] == 0:
-                neighbors = [(i, k) for k in range(9)] + [(k, j) for k in range(9)]
-                neighbors = [(x, y) for x, y in neighbors if (x, y) != (i, j)]
-                neighbors += get_box_indices(i, j)
-                neighbors = list(set(neighbors))
-                graph[(i, j)] = neighbors
-
-    return graph
-
-
-
-
-
-
-
-def solve_sudoku_with_colors(sudoku_grid):
-    def sudoku_to_graph(sudoku_grid):
-        graph = Graph(81)  # 9x9 Sudoku has 81 cells
-
-        def get_box_indices(i, j):
-            box_start_row = (i // 3) * 3
-            box_start_col = (j // 3) * 3
-            return [
-                (box_start_row + x, box_start_col + y) for x in range(3) for y in range(3)
-            ]
-
-        for i in range(9):
-            for j in range(9):
-                if sudoku_grid[i][j] == 0:
-                    neighbors = [(i, k) for k in range(9)] + [(k, j) for k in range(9)]
-                    neighbors = [(x, y) for x, y in neighbors if (x, y) != (i, j)]
-                    neighbors += get_box_indices(i, j)
-                    neighbors = list(set(neighbors))
-                    graph.graph[i * 9 + j][i * 9 + j] = 1  # Node to itself
-                    for x, y in neighbors:
-                        graph.graph[i * 9 + j][x * 9 + y] = 1
-
-        return graph
-
-    graph = sudoku_to_graph(sudoku_grid)
-    num_colors = 9
-
-    coloration = graph.graphColouring(num_colors)
-
-    if coloration is not None:
-        for i in range(9):
-            for j in range(9):
-                if sudoku_grid[i][j] == 0:
-                    sudoku_grid[i][j] = coloration[i * 9 + j]
-
-    return sudoku_grid
-
-
-sudo = [
+sudoku = [
     [5, 3, 0, 0, 7, 0, 0, 0, 0],
     [6, 0, 0, 1, 9, 5, 0, 0, 0],
     [0, 9, 8, 0, 0, 0, 0, 6, 0],
@@ -427,11 +363,47 @@ sudo = [
     [7, 0, 0, 0, 2, 0, 0, 0, 6],
     [0, 6, 0, 0, 0, 0, 2, 8, 0],
     [0, 0, 0, 4, 1, 9, 0, 0, 5],
-    [0, 0, 0, 0, 8, 0, 0, 7, 9],
+    [0, 0, 0, 0, 8, 0, 0, 7, 9]
 ]
 
-display_sudoku(sudo)
+import matplotlib.pyplot as plt
+import numpy as np
 
-sudo_result = solve_sudoku_with_colors(sudo)
-display_sudoku(sudo_result)
+def colorize_sudoku(sudoku):
+    color_map = {1: 'red', 2: 'blue', 3: 'green', 4: 'purple', 5: 'orange', 6: 'cyan', 7: 'pink', 8: 'brown', 9: 'gray'}
 
+    colored_sudoku = np.empty_like(sudoku, dtype=object)
+
+    for i in range(len(sudoku)):
+        for j in range(len(sudoku[i])):
+            value = sudoku[i][j]
+            if value != 0:
+                colored_sudoku[i][j] = color_map[value]
+
+    return colored_sudoku
+
+# Exemple d'utilisation :
+sudoku = [
+    [5, 3, 0, 0, 7, 0, 0, 0, 0],
+    [6, 0, 0, 1, 9, 5, 0, 0, 0],
+    [0, 9, 8, 0, 0, 0, 0, 6, 0],
+    [8, 0, 0, 0, 6, 0, 0, 0, 3],
+    [4, 0, 0, 8, 0, 3, 0, 0, 1],
+    [7, 0, 0, 0, 2, 0, 0, 0, 6],
+    [0, 6, 0, 0, 0, 0, 2, 8, 0],
+    [0, 0, 0, 4, 1, 9, 0, 0, 5],
+    [0, 0, 0, 0, 8, 0, 0, 7, 9]
+]
+
+colored_sudoku = colorize_sudoku(sudoku)
+
+# Afficher le sudoku coloré
+fig, ax = plt.subplots()
+cax = ax.matshow(np.ones_like(sudoku), cmap='gray', vmin=0, vmax=1)
+
+for i in range(len(sudoku)):
+    for j in range(len(sudoku[i])):
+        if colored_sudoku[i][j] is not None:
+            ax.text(j, i, str(sudoku[i][j]), va='center', ha='center', color=colored_sudoku[i][j], fontsize=12)
+
+plt.show()
