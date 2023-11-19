@@ -56,7 +56,7 @@ def visualiser_graphe(graph, coloration):
 
 # Exemple of adjacence list
 graph_matrice_adjacence = [
-    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 1],
     [1, 0, 1, 1, 1, 0, 0],
     [1, 1, 0, 0, 1, 1, 0],
     [1, 0, 0, 0, 1, 0, 1],
@@ -197,9 +197,10 @@ class Graph():
     # is safe for vertex v
     def isSafe(self, v, colour, c):
         for i in range(self.V):
-            if self.graph[v][i] == 1 and colour[i] == c:
+            if (self.graph[v][i] == 1 and colour[i] == c) or (self.graph[i][v] == 1 and colour[i] == c):
                 return False
         return True
+
  
     # A recursive utility function to solve m
     # coloring  problem
@@ -216,15 +217,18 @@ class Graph():
  
     def graphColouring(self, m):
         colour = [0] * self.V
-        if self.graphColourUtil(m, colour, 0) == None:
-            return False
-        return colour
-"""
+        if self.graphColourUtil(m, colour, 0):
+            return colour
+        return False
+
+
 g = Graph(len(graph_matrice_adjacence))
 g.graph = graph_matrice_adjacence
+print(g.graph)
 m = 3
+print(g.graphColouring(m))
 visualiser_graphe(graph_liste_adjacence,g.graphColouring(m))
-"""
+
 # -----------------------------------------------------------------------------
 # To design and implement in Python a coloring algorithm for the case
 # of a dynamic graph where the number of vertices and edges evolve over time.
@@ -365,7 +369,7 @@ sudoku = [
     [0, 0, 0, 4, 1, 9, 0, 0, 5],
     [0, 0, 0, 0, 8, 0, 0, 7, 9]
 ]
-
+"""
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -406,4 +410,4 @@ for i in range(len(sudoku)):
         if colored_sudoku[i][j] is not None:
             ax.text(j, i, str(sudoku[i][j]), va='center', ha='center', color=colored_sudoku[i][j], fontsize=12)
 
-plt.show()
+plt.show()"""
