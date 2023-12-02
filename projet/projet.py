@@ -18,7 +18,16 @@ def matrice_adjacence_to_liste_adjacence(matrice):
 
 def liste_adjacence_to_matrice_adjacence(liste_adjacence):
     # Trouver le nombre de sommets dans le graphe
-    nb_sommets = len(liste_adjacence)
+    nb_sommets = (
+        max(
+            max(liste_adjacence.keys(), default=-1),
+            max(
+                [max(v) if isinstance(v, list) else -1 for v in liste_adjacence.keys()],
+                default=-1,
+            ),
+        )
+        + 1
+    )
 
     # Initialiser une matrice d'adjacence remplie de zéros
     matrice_adjacence = [[0] * nb_sommets for _ in range(nb_sommets)]
@@ -29,7 +38,6 @@ def liste_adjacence_to_matrice_adjacence(liste_adjacence):
             matrice_adjacence[sommet][voisin] = 1
 
     return matrice_adjacence
-
 
 def visualiser_graphe(graph, coloration):
     # create an graph
@@ -56,13 +64,14 @@ def visualiser_graphe(graph, coloration):
 
 # Exemple of adjacence list
 graph_matrice_adjacence = [
-    [0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 1, 1, 1, 0, 0],
-    [1, 1, 0, 0, 1, 1, 0],
-    [1, 0, 0, 0, 1, 0, 1],
-    [0, 1, 1, 1, 0, 0, 0],
-    [0, 0, 1, 0, 0, 0, 1],
-    [0, 0, 0, 1, 0, 1, 0],
+    [0, 0, 0, 1, 0, 1, 0,1],
+    [0, 0, 1, 0, 1, 0, 1,0],
+    [0, 1, 0, 0, 0, 1, 0,1],
+    [1, 0, 0, 0, 1, 0, 1,0],
+    [0, 1, 0, 1, 0, 0, 0,1],
+    [1, 0, 1, 0, 0, 0, 1,0],
+    [0, 1, 0, 1, 0, 1, 0,0],
+    [1, 0, 1, 0, 1, 0, 0,0]
 ]
 
 # Convert the matrice to an adjacence list
@@ -201,7 +210,11 @@ class Graph():
                 return False
         return True
 
- 
+     
+    def add_edge(self, u, v):
+        self.graph[u][v] = 1
+        self.graph[v][u] = 1
+        
     # A recursive utility function to solve m
     # coloring  problem
     def graphColourUtil(self, m, colour, v):
@@ -220,19 +233,21 @@ class Graph():
         if self.graphColourUtil(m, colour, 0):
             return colour
         return False
-
-
+    
+    
+"""
 g = Graph(len(graph_matrice_adjacence))
 g.graph = graph_matrice_adjacence
-print(g.graph)
-m = 3
-print(g.graphColouring(m))
-visualiser_graphe(graph_liste_adjacence,g.graphColouring(m))
-
+#Might be not enough colours if you have 'bool' object is not subscriptable
+m = 2
+visualiser_graphe(matrice_adjacence_to_liste_adjacence(g.graph),g.graphColouring(m))
+"""
 # -----------------------------------------------------------------------------
 # To design and implement in Python a coloring algorithm for the case
 # of a dynamic graph where the number of vertices and edges evolve over time.
 # -----------------------------------------------------------------------------
+
+
 
 
 def remove_node(graph_liste_adjacence, noeud):
@@ -258,49 +273,68 @@ def modify_graph_dynamically(liste_adjacence):
 
     if operation == 0:  # add a node
         new_neighbors = random.sample(range(n), random.randint(1, n // 2))
-        liste_adjacence[n] = new_neighbors
-        for neighbor in new_neighbors:
-            liste_adjacence[neighbor].append(n)
-        print(f"Adding the Node  {n} with his neighbors {new_neighbors}.")
-        n = len(liste_adjacence) 
+        filtered_neighbors = [
+            neighbor for neighbor in new_neighbors if neighbor in liste_adjacence
+        ]
+        i = random.randint(0, 2 * n - 1)
+        while i in liste_adjacence:
+            i = random.randint(0, 2 * n - 1)
+        if i in filtered_neighbors:
+            filtered_neighbors.remove(i)
+        print(f"Adding the Node  {i} with his neighbors {filtered_neighbors}.")
+        liste_adjacence[i] = filtered_neighbors
+        for neighbor in filtered_neighbors:
+            liste_adjacence[neighbor].append(i)
+
+        n = len(liste_adjacence)
 
     elif operation == 1:  # remove a node
         if n > 1:
-            node_to_remove = random.randint(0, n - 1)
-            while node_to_remove not in liste_adjacence:
-                node_to_remove = random.randint(0, n - 1)
-            liste_adjacence = remove_node(liste_adjacence, node_to_remove)
-            print(f"Remove the node {node_to_remove} and his links .")
+            node_to_remove = random.randint(0, list(liste_adjacence.keys())[-1])
+        while node_to_remove not in liste_adjacence:
+            node_to_remove = random.randint(0, list(liste_adjacence.keys())[-1])
+        liste_adjacence = remove_node(liste_adjacence, node_to_remove)
+        print(f"Remove the node {node_to_remove} and his links .")
 
     elif operation == 2:  # add an edge
-        i = random.randint(0, n - 1)
-        j = random.randint(0, n - 1)
-        if j not in liste_adjacence[i]:
-            liste_adjacence[i].append(j)
-            liste_adjacence[j].append(i)
-            print(f"Adding link between the node {i} and the node {j}.")
+        i = random.randint(0, list(liste_adjacence.keys())[-1])
+        while i not in liste_adjacence:
+            i = random.randint(0, list(liste_adjacence.keys())[-1])
+        j = random.randint(0, list(liste_adjacence.keys())[-1])
+        while j not in liste_adjacence:
+            j = random.randint(0, list(liste_adjacence.keys())[-1])
+        if i != j :
+            if j not in liste_adjacence[i]:
+                print(f"Adding link between the node {i} and the node {j}.")
+                liste_adjacence[i].append(j)
+                liste_adjacence[j].append(i)
 
     elif operation == 3:  # remove an edge
-        i = random.randint(0, n - 1)
+        i = random.randint(0, list(liste_adjacence.keys())[-1])
+        while i not in liste_adjacence:
+            i = random.randint(0, list(liste_adjacence.keys())[-1])
         if liste_adjacence[i]:
             j = random.choice(liste_adjacence[i])
+            print(f"Removing node link between the node  {i} and the node {j}.")
             liste_adjacence[i].remove(j)
             liste_adjacence[j].remove(i)
-            print(f"Removing node link between the node  {i} and the node {j}.")
 
     else:  # modify an edge
-        i = random.randint(0, n - 1)
+        i = random.randint(0, list(liste_adjacence.keys())[-1])
+        while i not in liste_adjacence:
+            i = random.randint(0, list(liste_adjacence.keys())[-1])
         if liste_adjacence[i]:
             j = random.choice(liste_adjacence[i])
             if j != i:
                 if j not in liste_adjacence[i]:
+                    print(f"Adding link between the node {i} and the node {j}.")
                     liste_adjacence[i].append(j)
                     liste_adjacence[j].append(i)
-                    print(f"Adding link between the node {i} and the node {j}.")
+
                 else:
+                    print(f"Removing node link between the node {i} and the node {j}.")
                     liste_adjacence[i].remove(j)
                     liste_adjacence[j].remove(i)
-                    print(f"Removing node link between the node {i} and the node {j}.")
 
     return liste_adjacence
 
@@ -310,7 +344,7 @@ def observe_graph_evolution(initial_graph, num_iterations, num_colors):
     graph_matrice_adjacence = liste_adjacence_to_matrice_adjacence(current_graph)
     g = Graph(len(graph_matrice_adjacence))
     g.graph = graph_matrice_adjacence
-    visualiser_graphe(current_graph,g.graphColouring(num_colors))
+    visualiser_graphe(current_graph, g.graphColouring(num_colors))
     for _ in range(num_iterations):
         current_graph = modify_graph_dynamically(current_graph)
         if current_graph == None:
@@ -318,13 +352,13 @@ def observe_graph_evolution(initial_graph, num_iterations, num_colors):
         graph_matrice_adjacence = liste_adjacence_to_matrice_adjacence(current_graph)
         g = Graph(len(graph_matrice_adjacence))
         g.graph = graph_matrice_adjacence
-        visualiser_graphe(current_graph,g.graphColouring(num_colors))
-
+        visualiser_graphe(current_graph, g.graphColouring(num_colors))
+        
+        
 """
 num_colors = 3
 observe_graph_evolution(graph_liste_adjacence, 4, num_colors)
 """
-
 # -----------------------------------------------------------------------------
 # To use the implemented algorithms to develop an application that
 # allows coloring a user-provided graph and solving a Sudoku grid using
@@ -369,45 +403,51 @@ sudoku = [
     [0, 0, 0, 4, 1, 9, 0, 0, 5],
     [0, 0, 0, 0, 8, 0, 0, 7, 9]
 ]
+
+def solve_sudoku(sudoku):
+    n = 9  # taille de la grille sudoku
+    m = 9  # nombre de couleurs (chiffres de 1 à 9)
+
+    # Créer une instance de la classe Graph
+    g = Graph(n * n)
+
+    # Colorier de base les valeurs non nulles avec des couleurs différentes
+    for i in range(n):
+        for j in range(n):
+            if sudoku[i][j] != 0:
+                g.graphColouring(sudoku[i][j])
+
+    # Ajouter des contraintes pour chaque ligne, colonne et carré
+    for i in range(n):
+        for j in range(n):
+            for k in range(n):
+                if k != j:
+                    g.add_edge(i * n + j, i * n + k)  # Contrainte de la ligne
+                if k != i:
+                    g.add_edge(i * n + j, k * n + j)  # Contrainte de la colonne
+
+    # Contrainte du carré
+    for i in range(0, n, 3):
+        for j in range(0, n, 3):
+            for k in range(n):
+                row = i + k // 3
+                col = j + k % 3
+                for l in range(n):
+                    if (row != i + (l // 3) or col != j + (l % 3)) and (k != l):
+                        g.add_edge(row * n + col, (i + (l // 3)) * n + (j + (l % 3)))
+
+    # Résoudre le problème de coloration du graphe
+    colouring_result = g.graphColouring(m)
+
+    # Remplir la grille sudoku avec la solution colorée
+    for i in range(n):
+        for j in range(n):
+            sudoku[i][j] = colouring_result[i * n + j]
+
+    return sudoku
+
 """
-import matplotlib.pyplot as plt
-import numpy as np
-
-def colorize_sudoku(sudoku):
-    color_map = {1: 'red', 2: 'blue', 3: 'green', 4: 'purple', 5: 'orange', 6: 'cyan', 7: 'pink', 8: 'brown', 9: 'gray'}
-
-    colored_sudoku = np.empty_like(sudoku, dtype=object)
-
-    for i in range(len(sudoku)):
-        for j in range(len(sudoku[i])):
-            value = sudoku[i][j]
-            if value != 0:
-                colored_sudoku[i][j] = color_map[value]
-
-    return colored_sudoku
-
-# Exemple d'utilisation :
-sudoku = [
-    [5, 3, 0, 0, 7, 0, 0, 0, 0],
-    [6, 0, 0, 1, 9, 5, 0, 0, 0],
-    [0, 9, 8, 0, 0, 0, 0, 6, 0],
-    [8, 0, 0, 0, 6, 0, 0, 0, 3],
-    [4, 0, 0, 8, 0, 3, 0, 0, 1],
-    [7, 0, 0, 0, 2, 0, 0, 0, 6],
-    [0, 6, 0, 0, 0, 0, 2, 8, 0],
-    [0, 0, 0, 4, 1, 9, 0, 0, 5],
-    [0, 0, 0, 0, 8, 0, 0, 7, 9]
-]
-
-colored_sudoku = colorize_sudoku(sudoku)
-
-# Afficher le sudoku coloré
-fig, ax = plt.subplots()
-cax = ax.matshow(np.ones_like(sudoku), cmap='gray', vmin=0, vmax=1)
-
-for i in range(len(sudoku)):
-    for j in range(len(sudoku[i])):
-        if colored_sudoku[i][j] is not None:
-            ax.text(j, i, str(sudoku[i][j]), va='center', ha='center', color=colored_sudoku[i][j], fontsize=12)
-
-plt.show()"""
+display_sudoku(sudoku)
+print("\n----------------------------------------------\n")
+solved_sudoku = solve_sudoku(sudoku)
+display_sudoku(solved_sudoku)"""
