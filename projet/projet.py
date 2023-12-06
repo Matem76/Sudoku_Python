@@ -210,13 +210,12 @@ class Graph():
                 return False
         return True
 
-     
     def add_edge(self, u, v):
         self.graph[u][v] = 1
         self.graph[v][u] = 1
         
     # A recursive utility function to solve m
-    # coloring  problem
+    # coloring problem
     def graphColourUtil(self, m, colour, v):
         if v == self.V:
             return True
@@ -228,19 +227,18 @@ class Graph():
                     return True
                 colour[v] = 0
  
-    def graphColouring(self, m):
+    def graphColouring(self):
+        m = 1
         colour = [0] * self.V
-        if self.graphColourUtil(m, colour, 0):
-            return colour
-        return False
-    
+        while not self.graphColourUtil(m, colour, 0):
+            m += 1
+            colour = [0] * self.V
+        return colour
     
 """
 g = Graph(len(graph_matrice_adjacence))
 g.graph = graph_matrice_adjacence
-#Might be not enough colours if you have 'bool' object is not subscriptable
-m = 2
-visualiser_graphe(matrice_adjacence_to_liste_adjacence(g.graph),g.graphColouring(m))
+visualiser_graphe(matrice_adjacence_to_liste_adjacence(g.graph),g.graphColouring())
 """
 # -----------------------------------------------------------------------------
 # To design and implement in Python a coloring algorithm for the case
@@ -343,12 +341,12 @@ def modify_graph_dynamically(liste_adjacence):
     return liste_adjacence
 
 
-def observe_graph_evolution(initial_graph, num_iterations, num_colors):
+def observe_graph_evolution(initial_graph, num_iterations):
     current_graph = initial_graph.copy()
     graph_matrice_adjacence = liste_adjacence_to_matrice_adjacence(current_graph)
     g = Graph(len(graph_matrice_adjacence))
     g.graph = graph_matrice_adjacence
-    visualiser_graphe(current_graph, g.graphColouring(num_colors))
+    visualiser_graphe(current_graph, g.graphColouring())
     for _ in range(num_iterations):
         current_graph = modify_graph_dynamically(current_graph)
         if current_graph == None:
@@ -356,12 +354,12 @@ def observe_graph_evolution(initial_graph, num_iterations, num_colors):
         graph_matrice_adjacence = liste_adjacence_to_matrice_adjacence(current_graph)
         g = Graph(len(graph_matrice_adjacence))
         g.graph = graph_matrice_adjacence
-        visualiser_graphe(current_graph, g.graphColouring(num_colors))
+        visualiser_graphe(current_graph, g.graphColouring())
         
         
+
 """
-num_colors = 3
-observe_graph_evolution(graph_liste_adjacence, 4, num_colors)
+observe_graph_evolution(graph_liste_adjacence, 4)
 """
 # -----------------------------------------------------------------------------
 # To use the implemented algorithms to develop an application that
@@ -451,7 +449,7 @@ def display_4x4_sudoku(grid):
         if (i + 1) % 2 == 0:
             print("+----+----+")
 
-
+"""
 # Example Sudoku
 sudoku_4x4 = [
     [1, 0, 0, 0],
@@ -476,4 +474,4 @@ solved_sudoku_4x4 = apply_coloring_to_sudoku(sudoku_4x4, coloring)
 print("Original Sudoku:")
 display_4x4_sudoku(sudoku_4x4)
 print("\nSolved Sudoku:")
-display_4x4_sudoku(solved_sudoku_4x4)
+display_4x4_sudoku(solved_sudoku_4x4)"""
