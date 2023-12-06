@@ -308,6 +308,10 @@ def modify_graph_dynamically(liste_adjacence):
                 print(f"Adding link between the node {i} and the node {j}.")
                 liste_adjacence[i].append(j)
                 liste_adjacence[j].append(i)
+            else :
+                print(f"cant add the link because those random numbers {i},{j} cant be used\n")
+        else:
+            print(f"cant add the link because those random numbers {i},{j} cant be used\n")
 
     elif operation == 3:  # remove an edge
         i = random.randint(0, list(liste_adjacence.keys())[-1])
@@ -375,79 +379,101 @@ def get_sudoku_grid():
     return grid
 
 
-def display_sudoku(grid):
-    print("+-------+-------+-------+")
-    for i in range(9):
-        for j in range(9):
-            if j % 3 == 0:
+def display_4x4_sudoku(grid):
+    print("+----+----+")
+    for i in range(4):
+        for j in range(4):
+            if j % 2 == 0:
                 print("|", end=" ")
             if grid[i][j] == 0:
                 print(".", end=" ")
             else:
                 print(grid[i][j], end=" ")
         print("|")
-        if (i + 1) % 3 == 0:
-            print("+-------+-------+-------+")
+        if (i + 1) % 2 == 0:
+            print("+----+----+")
 
 
-   
-
-sudoku = [
-    [5, 3, 0, 0, 7, 0, 0, 0, 0],
-    [6, 0, 0, 1, 9, 5, 0, 0, 0],
-    [0, 9, 8, 0, 0, 0, 0, 6, 0],
-    [8, 0, 0, 0, 6, 0, 0, 0, 3],
-    [4, 0, 0, 8, 0, 3, 0, 0, 1],
-    [7, 0, 0, 0, 2, 0, 0, 0, 6],
-    [0, 6, 0, 0, 0, 0, 2, 8, 0],
-    [0, 0, 0, 4, 1, 9, 0, 0, 5],
-    [0, 0, 0, 0, 8, 0, 0, 7, 9]
+sudoku_4x4 = [
+    [1, 0, 0, 0],
+    [0, 2, 0, 0],
+    [0, 0, 3, 0],
+    [0, 0, 0, 4]
 ]
 
-def solve_sudoku(sudoku):
-    n = 9  # taille de la grille sudoku
-    m = 9  # nombre de couleurs (chiffres de 1 à 9)
+def sudoku_to_adjacency_matrix(sudoku):
+    n = 4  # For a 4x4 Sudoku
+    adjacency_matrix = [[0] * (n * n) for _ in range(n * n)]
 
-    # Créer une instance de la classe Graph
-    g = Graph(n * n)
-
-    # Colorier de base les valeurs non nulles avec des couleurs différentes
     for i in range(n):
         for j in range(n):
             if sudoku[i][j] != 0:
-                g.graphColouring(sudoku[i][j])
+                for k in range(n):
+                    if k != j:
+                        adjacency_matrix[i * n + j][i * n + k] = 1  # same row
+                    if k != i:
+                        adjacency_matrix[i * n + j][k * n + j] = 1  # same column
+                subgrid_row = 2 * (i // 2)
+                subgrid_col = 2 * (j // 2)
+                for x in range(2):
+                    for y in range(2):
+                        if x != i % 2 or y != j % 2:
+                            adjacency_matrix[i * n + j][(subgrid_row + x) * n + subgrid_col + y] = 1  # same subgrid
 
-    # Ajouter des contraintes pour chaque ligne, colonne et carré
+    # Add numbers of Sudoku to the diagonal
+    for i in range(n * n):
+        adjacency_matrix[i][i] = sudoku[i // n][i % n]
+
+    return adjacency_matrix
+
+
+def apply_coloring_to_sudoku(sudoku, coloring):
+    n = 4  # For a 4x4 Sudoku
     for i in range(n):
         for j in range(n):
-            for k in range(n):
-                if k != j:
-                    g.add_edge(i * n + j, i * n + k)  # Contrainte de la ligne
-                if k != i:
-                    g.add_edge(i * n + j, k * n + j)  # Contrainte de la colonne
-
-    # Contrainte du carré
-    for i in range(0, n, 3):
-        for j in range(0, n, 3):
-            for k in range(n):
-                row = i + k // 3
-                col = j + k % 3
-                for l in range(n):
-                    if (row != i + (l // 3) or col != j + (l % 3)) and (k != l):
-                        g.add_edge(row * n + col, (i + (l // 3)) * n + (j + (l % 3)))
-
-    # Résoudre le problème de coloration du graphe
-    colouring_result = g.graphColouring(m)
-
-    # Remplir la grille sudoku avec la solution colorée
-    for i in range(n):
-        for j in range(n):
-            sudoku[i][j] = colouring_result[i * n + j]
+            if sudoku[i][j] == 0:
+                sudoku[i][j] = coloring[i * n + j]
 
     return sudoku
 
-"""
-display_sudoku(sudoku)
-print("\n----------------------------------------------\n")
-solved_sudoku = solve_sudoku(sudoku)
-display_sudoku(solved_sudoku)"""
+
+def display_4x4_sudoku(grid):
+    print("+----+----+")
+    for i in range(4):
+        for j in range(4):
+            if j % 2 == 0:
+                print("|", end=" ")
+            if grid[i][j] == 0:
+                print(".", end=" ")
+            else:
+                print(grid[i][j], end=" ")
+        print("|")
+        if (i + 1) % 2 == 0:
+            print("+----+----+")
+
+
+# Example Sudoku
+sudoku_4x4 = [
+    [1, 0, 0, 0],
+    [0, 2, 0, 0],
+    [0, 0, 3, 0],
+    [0, 0, 0, 4]
+]
+
+# Convert Sudoku to adjacency matrix
+adjacency_matrix = sudoku_to_adjacency_matrix(sudoku_4x4)
+
+# Use graph coloring algorithm
+num_colors = 4  # As it's a 4x4 Sudoku
+g = Graph(len(adjacency_matrix))
+g.graph = adjacency_matrix
+coloring = g.graphColouring(num_colors)
+
+# Apply coloring to Sudoku
+solved_sudoku_4x4 = apply_coloring_to_sudoku(sudoku_4x4, coloring)
+
+# Display the results
+print("Original Sudoku:")
+display_4x4_sudoku(sudoku_4x4)
+print("\nSolved Sudoku:")
+display_4x4_sudoku(solved_sudoku_4x4)
