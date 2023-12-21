@@ -509,7 +509,7 @@ def sudoku_to_value_list(sudoku):
 
 
 value_list = sudoku_to_value_list(sudoku9)
-
+"""
 print("#----------------------#")
 print("Original Sudoku:")
 display_9x9_sudoku(sudoku9)
@@ -519,3 +519,5 @@ g = Graph2(len(k), k, value_list)
 print("#----------------------#")
 print("Solved Sudoku:")
 display_9x9_sudoku(tableau_vers_matrice(g.graphColouring()))
+"""
+
