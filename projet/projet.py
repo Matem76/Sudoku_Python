@@ -1,3 +1,4 @@
+import math
 import networkx as nx
 import matplotlib.pyplot as plt
 import random
@@ -23,7 +24,8 @@ def liste_adjacence_to_matrice_adjacence(liste_adjacence):
         max(
             max(liste_adjacence.keys(), default=-1),
             max(
-                [max(v) if isinstance(v, list) else -1 for v in liste_adjacence.keys()],
+                [max(v) if isinstance(v, list) else -
+                 1 for v in liste_adjacence.keys()],
                 default=-1,
             ),
         )
@@ -75,7 +77,8 @@ graph_matrice_adjacence = [
 ]
 
 # Convert the matrice to an adjacence list
-graph_liste_adjacence = matrice_adjacence_to_liste_adjacence(graph_matrice_adjacence)
+graph_liste_adjacence = matrice_adjacence_to_liste_adjacence(
+    graph_matrice_adjacence)
 
 # -----------------------------------------------------------------------------
 # Python3 program to implement greedy
@@ -198,7 +201,8 @@ visualiser_graphe(graph_liste_adjacence, coloration_welsh)
 class Graph:
     def __init__(self, vertices):
         self.V = vertices
-        self.graph = [[0 for column in range(vertices)] for row in range(vertices)]
+        self.graph = [[0 for column in range(vertices)]
+                      for row in range(vertices)]
 
     # A utility function to check
     # if the current color assignment
@@ -236,6 +240,41 @@ class Graph:
             colour = [0] * self.V
         return colour
 
+
+class Graph2:
+    def __init__(self, vertices, adjacency_list, initial_coloring):
+        self.V = vertices
+        self.adjacency_list = adjacency_list
+        self.initial_coloring = initial_coloring
+
+    def isSafe(self, v, colour, c):
+        for neighbor in self.adjacency_list[v]:
+            if colour[neighbor] == c:
+                return False
+        return True
+
+    def add_edge(self, u, v):
+        self.adjacency_list[u].append(v)
+        self.adjacency_list[v].append(u)
+
+    def graphColourUtil(self, colour, v):
+        if v == self.V:
+            return True
+
+        if colour[v] != 0:
+            return self.graphColourUtil(colour, v + 1)
+
+        for c in range(1, max(colour) + 1):
+            if self.isSafe(v, colour, c):
+                colour[v] = c
+                if self.graphColourUtil(colour, v + 1):
+                    return True
+                colour[v] = 0
+
+    def graphColouring(self):
+        colour = self.initial_coloring
+        self.graphColourUtil(colour, 0)
+        return colour
 
 """
 g = Graph(len(graph_matrice_adjacence))
@@ -288,9 +327,11 @@ def modify_graph_dynamically(liste_adjacence):
 
     elif operation == 1:  # remove a node
         if n > 1:
-            node_to_remove = random.randint(0, list(liste_adjacence.keys())[-1])
+            node_to_remove = random.randint(
+                0, list(liste_adjacence.keys())[-1])
         while node_to_remove not in liste_adjacence:
-            node_to_remove = random.randint(0, list(liste_adjacence.keys())[-1])
+            node_to_remove = random.randint(
+                0, list(liste_adjacence.keys())[-1])
         liste_adjacence = remove_node(liste_adjacence, node_to_remove)
         print(f"Remove the node {node_to_remove} and his links .")
 
@@ -321,7 +362,8 @@ def modify_graph_dynamically(liste_adjacence):
             i = random.randint(0, list(liste_adjacence.keys())[-1])
         if liste_adjacence[i]:
             j = random.choice(liste_adjacence[i])
-            print(f"Removing node link between the node  {i} and the node {j}.")
+            print(
+                f"Removing node link between the node  {i} and the node {j}.")
             liste_adjacence[i].remove(j)
             liste_adjacence[j].remove(i)
 
@@ -333,12 +375,14 @@ def modify_graph_dynamically(liste_adjacence):
             j = random.choice(liste_adjacence[i])
             if j != i:
                 if j not in liste_adjacence[i]:
-                    print(f"Adding link between the node {i} and the node {j}.")
+                    print(
+                        f"Adding link between the node {i} and the node {j}.")
                     liste_adjacence[i].append(j)
                     liste_adjacence[j].append(i)
 
                 else:
-                    print(f"Removing node link between the node {i} and the node {j}.")
+                    print(
+                        f"Removing node link between the node {i} and the node {j}.")
                     liste_adjacence[i].remove(j)
                     liste_adjacence[j].remove(i)
 
@@ -347,7 +391,8 @@ def modify_graph_dynamically(liste_adjacence):
 
 def observe_graph_evolution(initial_graph, num_iterations):
     current_graph = initial_graph.copy()
-    graph_matrice_adjacence = liste_adjacence_to_matrice_adjacence(current_graph)
+    graph_matrice_adjacence = liste_adjacence_to_matrice_adjacence(
+        current_graph)
     g = Graph(len(graph_matrice_adjacence))
     g.graph = graph_matrice_adjacence
     visualiser_graphe(current_graph, g.graphColouring())
@@ -355,7 +400,8 @@ def observe_graph_evolution(initial_graph, num_iterations):
         current_graph = modify_graph_dynamically(current_graph)
         if current_graph == None:
             break
-        graph_matrice_adjacence = liste_adjacence_to_matrice_adjacence(current_graph)
+        graph_matrice_adjacence = liste_adjacence_to_matrice_adjacence(
+            current_graph)
         g = Graph(len(graph_matrice_adjacence))
         g.graph = graph_matrice_adjacence
         visualiser_graphe(current_graph, g.graphColouring())
@@ -379,24 +425,45 @@ def get_sudoku_grid():
         grid.append(row)
     return grid
 
-
-def display_4x4_sudoku(grid):
-    print("+-----+-----+")
-    for i in range(4):
-        for j in range(4):
-            if j % 2 == 0:
+def display_9x9_sudoku(grid):
+    print("+-------+-------+-------+")
+    for i in range(9):
+        for j in range(9):
+            if j % 3 == 0:
                 print("|", end=" ")
             if grid[i][j] == 0:
                 print(".", end=" ")
             else:
                 print(grid[i][j], end=" ")
-        print("|")
-        if (i + 1) % 2 == 0:
-            print("+-----+-----+")
+            if j == 8:
+                print("|")
+        if (i + 1) % 3 == 0:
+            print("+-------+-------+-------+")
 
 
-sudoku_4x4 = [[1, 0, 0, 0], [0, 2, 0, 0], [0, 0, 3, 0], [0, 0, 0, 4]]
+def tableau_vers_matrice(tableau):
+    taille = int(math.sqrt(len(tableau)))
 
+    matrice = [[0 for _ in range(taille)] for _ in range(taille)]
+
+    # Remplissage de la matrice en utilisant les valeurs du tableau
+    for i in range(taille):
+        for j in range(taille):
+            matrice[i][j] = tableau[i * taille + j]
+
+    return matrice
+
+sudoku9 = [
+    [5, 3, 0, 0, 7, 0, 0, 0, 0],
+    [6, 0, 0, 1, 9, 5, 0, 0, 0],
+    [0, 9, 8, 0, 0, 0, 0, 6, 0],
+    [8, 0, 0, 0, 6, 0, 0, 0, 3],
+    [4, 0, 0, 8, 0, 3, 0, 0, 1],
+    [7, 0, 0, 0, 2, 0, 0, 0, 6],
+    [0, 6, 0, 0, 0, 0, 2, 8, 0],
+    [0, 0, 0, 4, 1, 9, 0, 0, 5],
+    [0, 0, 0, 0, 8, 0, 0, 7, 9]
+]
 
 def sudoku_to_adjacency_list(sudoku):
     n = len(sudoku)
@@ -414,17 +481,18 @@ def sudoku_to_adjacency_list(sudoku):
                 if k != i:
                     adjacency_list[n * i + j].add(n * k + j)
 
-            # Same 2x2 sub-grid
-            start_row, start_col = i - i % 2, j - j % 2
-            for x in range(2):
-                for y in range(2):
+            # Same 3x3 sub-grid
+            start_row, start_col = 3 * (i // 3), 3 * (j // 3)
+            for x in range(3):
+                for y in range(3):
                     if start_row + x != i or start_col + y != j:
                         adjacency_list[n * i + j].add(
                             n * (start_row + x) + start_col + y
                         )
 
     # Convert sets to lists for consistency with the original function
-    adjacency_list = {key: list(value) for key, value in adjacency_list.items()}
+    adjacency_list = {key: list(value)
+                      for key, value in adjacency_list.items()}
 
     return adjacency_list
 
@@ -440,14 +508,14 @@ def sudoku_to_value_list(sudoku):
     return value_list
 
 
-value_list = sudoku_to_value_list(sudoku_4x4)
-print(sudoku_to_adjacency_list(sudoku_4x4))
+value_list = sudoku_to_value_list(sudoku9)
+
 print("#----------------------#")
-print(value_list)
 print("Original Sudoku:")
-display_4x4_sudoku(sudoku_4x4)
+display_9x9_sudoku(sudoku9)
 
-
-visualiser_graphe(
-    sudoku_to_adjacency_list(sudoku_4x4), sudoku_to_value_list(sudoku_4x4)
-)
+k =sudoku_to_adjacency_list(sudoku9)
+g = Graph2(len(k), k, value_list)
+print("#----------------------#")
+print("Solved Sudoku:")
+display_9x9_sudoku(tableau_vers_matrice(g.graphColouring()))
