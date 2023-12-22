@@ -1,0 +1,170 @@
+\documentclass{report}
+\input{preamble}
+\input{macros}
+\input{letterfonts}
+
+\setlength{\parindent}{4em}  % Ajustez le nombre d'ems selon vos préférences
+
+\makeatletter
+\renewcommand\subsection{\@startsection{subsection}{2}{\z@}%
+  {-2ex\@plus -1ex \@minus -.2ex}%
+  {1ex \@plus .2ex}%
+  {\normalfont\bfseries}}
+\makeatother
+
+\title{\Huge Rapport Algorithmique des graphes}
+\author{\huge Perrot Killiann \& Espada Mora Matthieu \& Nalet Antoine}
+\date{}
+
+\begin{document}
+
+\begin{titlepage}
+    \centering
+    \maketitle
+    \newpage
+    \pdfbookmark[section]{\contentsname}{Index}
+
+    \tableofcontents
+    \pagebreak
+\end{titlepage}
+
+\chapter{}
+\section*{L'Étude des Coloriages de Graphes : Entre Culture et Utilité}
+\addcontentsline{toc}{section}{L'Étude des Coloriages de Graphes : Entre Culture et Utilité}
+
+\subsection*{Introduction}
+
+Les coloriages de graphes constituent un domaine d'étude fascinant, alliant la richesse culturelle des mathématiques à leur utilité pratique dans divers domaines. Dans cette exploration, nous plongerons dans la partie culturelle en examinant pourquoi les coloriages de graphes ont captivé l'attention des mathématiciens et quels défis stimulants ils soulèvent.
+
+\subsection*{Partie culturelle}
+
+Les coloriages de graphes trouvent leurs racines dans la théorie des graphes, une branche des mathématiques. Leur attrait réside dans la manière dont ils permettent de visualiser et de comprendre les relations entre les entités représentées par les nœuds d'un graphe. Depuis les premières explorations de ce concept par Francis Guthrie au XIXe siècle avec le problème des quatre couleurs, les mathématiciens ont été intrigués par la question fondamentale : "Quel est le nombre minimum de couleurs nécessaires pour colorier un graphe de telle sorte que deux nœuds voisins aient des couleurs différentes ?" Cette question en apparence simple a donné naissance à une pléthore de résultats profonds, de conjectures célèbres, et d'applications dans divers domaines.
+
+\subsection*{Partie utilitaire}
+
+Au-delà de leur intérêt académique, les coloriages de graphes trouvent des applications pratiques dans plusieurs domaines. En informatique, par exemple, la coloration de graphes est cruciale pour l'ordonnancement des tâches et la gestion des ressources. Dans les réseaux de télécommunications, les fréquences assignées aux canaux peuvent être modélisées par des coloriages de graphes pour éviter les interférences. Dans le domaine biologique, les coloriages de graphes sont utilisés pour représenter des interactions moléculaires complexes.
+
+\subsection*{Conclusion}
+
+En conclusion, l'étude des coloriages de graphes offre une perspective fascinante qui transcende les frontières entre la culture mathématique pure et les applications concrètes. De la résolution du problème des quatre couleurs à l'application dans des domaines aussi divers que l'informatique et la biologie, les coloriages de graphes continuent d'enrichir notre compréhension des relations entre les entités et de nous offrir des outils précieux pour résoudre des problèmes du monde réel.
+
+\newpage
+
+\section*{Les algorithmes utilisés}
+\addcontentsline{toc}{section}{Les algorithmes utilisés}
+\subsection*{Algorithme Glouton}
+
+Structures de données utilisées:
+\begin{itemize}
+  \item \texttt{adj} : Liste d'adjacence
+  \item \texttt{result} : Liste des couleurs des sommets
+  \item \texttt{available} : Liste des couleurs disponibles
+\end{itemize}
+
+\hspace{-4em}Primitives utilisées :
+\begin{itemize}
+  \item \texttt{addEdge} : Utilisée pour ajouter une arête entre deux sommets si l'utilisateur veut créer son graphe à la main
+\end{itemize}
+
+\begin{algorithm}[H]
+    \KwIn{
+      \begin{itemize}
+        \item \texttt{adj}: Adjacency list representing the graph
+        \item \texttt{V}: Number of vertices
+      \end{itemize}
+    }
+    \KwOut{
+      \begin{itemize}
+        \item \texttt{result}: List of colors of the vertices
+      \end{itemize}
+    }
+
+    \SetAlgoLined
+    \SetNoFillComment
+    
+    Function addEdge(adj, V, W):\\
+    \hspace{2em}adj[V].append(W);\\
+    \hspace{2em}adj[W].append(V);\\
+    \hspace{2em}\Return ajd;\\
+    Function greedyColoring(adj, V):\\
+    \hspace{2em} result[V] $\leftarrow$ {-1, -1, ..., -1} \tcp*{Initialize the list of colors to -1}
+    \hspace{2em} result[0] $\leftarrow$ 0 \tcp*{Color the first vertex with the first color}
+    \hspace{2em} available[V] $\leftarrow$ {False, False, ..., False} \tcp*{Initialize the list of available colors to False}
+    \hspace{2.2em}\For{$u$ from 1 to $V-1$}{
+        \hspace{4em}\For{i in ajd[u] } {
+            \hspace{4em} \uIf{result[i] $\neq$-1}{\hspace{6em}available[result[i]] $\leftarrow$ True;}
+                
+            }
+            \hspace{4em} cr $\leftarrow$ 0;\\
+            \hspace{4.2em}\While{$ cr < v$}{\hspace{4.2em}\uIf{$available[cr] == false$}{\hspace{6em}break;}}
+                \hspace{4.2em} result[u] $\leftarrow$ cr;}
+                \hspace{6em}\For{i in ajd[u]}{\hspace{6em}\uIf{result[i] $\neq$ -1}{\hspace{8em}available[result[i]] $\leftarrow$ False;}}
+        \hspace{2em}\Return result;
+    \caption{Greedy Coloring}
+
+\end{algorithm}
+\begin{note}
+    \item La complexité dépend du nombre de sommets et des arêtes  dans le graphe. Si $V$ est le nombre de sommets et $E$ le nombre d'arêtes dans le graphe , la complexité serait de l'ordre de $O(V\times E)$.
+\end{note}
+\newpage
+\subsection*{Algorithme Welsh-Powell}
+
+Structures de données utilisées:
+\begin{itemize}
+  \item \texttt{G} : Dictionnaire représentant le graphe
+  \item \texttt{Ma} : Matrice d'adjacence
+  \item \texttt{sommets} : Liste des sommets du graphe
+  \item \texttt{degres} : Liste des degrés des sommets du graphe
+  \item \texttt{result} : Liste représentant les couleurs attribuées aux sommets
+  \item \texttt{couleurs} : Liste des couleurs disponibles
+\end{itemize}
+
+\hspace{-4em}Primitives utilisées :
+\begin{itemize}
+  \item \texttt{MAdjacence} : Retourne une matrice d'adjacence Ma du graphe G ou Ma[i][j] = 1 si il existe une arête entre les sommets i et j, 0 sinon
+  \item \texttt{Sommets} : Retourne une liste des sommets du graphe G
+  \item \texttt{Voisinage} : Retourne un ensemble des voisins du sommet donné en paramètre
+\end{itemize}
+\begin{algorithm}[H]
+    \KwIn{
+      \begin{itemize}
+        \item \texttt{G}: Adjacency list representing the graph
+      \end{itemize}
+    }
+    \KwOut{
+      \begin{itemize}
+        \item \texttt{result}: List of colors of the vertices
+      \end{itemize}
+    }
+
+    \SetAlgoLined
+    \SetNoFillComment
+    Function MAdjacence(G):\\ 
+    \hspace{2em} n $\leftarrow$ length(G);\\
+    \hspace{2em} Ma $\leftarrow$ matrix of size $n \times n$ initialize with  {0, 0, ..., 0} ;\\
+    \hspace{2em} \For{$i$ from 0 to $n-1$}{
+        \hspace{4em} \For{$j$ from 0 to $n-1$}{
+            \hspace{6em} \If{i == j}{\hspace{8em} continue;}
+
+            \hspace{6em} \If{j in G[i]}{\hspace{8em}Ma[i][j] $\leftarrow$ 1; \tcp{If there is an edge between vertex i and j, set the corresponding entry to 1}}
+
+                
+            }
+                
+            }
+        \hspace{2em}\Return Ma;\\
+
+    Function Sommets(G):\\
+    \hspace{2em}\Return list of vertices in G;\\
+    Function Voisinage(G, sommet):\\
+    \hspace{2em}\Return neighbors of sommet in G;\\
+    \caption{Welsh-Powell Coloring}
+
+\end{algorithm}
+\begin{note}
+    \item La complexité dépend du nombre de sommets dans le graphe. Si $V$ est le nombre de sommets, la complexité serait de l'ordre de $O(V^2)$.
+\end{note}
+
+
+\end{document}
+

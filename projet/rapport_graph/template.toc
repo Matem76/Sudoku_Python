@@ -1,0 +1,4 @@
+\contentsline {chapter}{\numberline {1}}{1}{chapter.1}%
+\contentsline {section}{L'Étude des Coloriages de Graphes : Entre Culture et Utilité}{1}{section*.2}%
+\contentsline {section}{Les algorithmes utilisés}{2}{section*.7}%
+\contentsfinish 
