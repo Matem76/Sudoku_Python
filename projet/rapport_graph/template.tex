@@ -22,8 +22,7 @@
     \centering
     \maketitle
     \newpage
-    \pdfbookmark[section]{\contentsname}{Index}
-
+   
     \tableofcontents
     \pagebreak
 \end{titlepage}
@@ -49,7 +48,7 @@ Au-delà de leur intérêt académique, les coloriages de graphes trouvent des a
 En conclusion, l'étude des coloriages de graphes offre une perspective fascinante qui transcende les frontières entre la culture mathématique pure et les applications concrètes. De la résolution du problème des quatre couleurs à l'application dans des domaines aussi divers que l'informatique et la biologie, les coloriages de graphes continuent d'enrichir notre compréhension des relations entre les entités et de nous offrir des outils précieux pour résoudre des problèmes du monde réel.
 
 \newpage
-
+\chapter{}
 \section*{Les algorithmes utilisés}
 \addcontentsline{toc}{section}{Les algorithmes utilisés}
 \subsection*{Algorithme Glouton}
@@ -158,13 +157,185 @@ Structures de données utilisées:
     \hspace{2em}\Return list of vertices in G;\\
     Function Voisinage(G, sommet):\\
     \hspace{2em}\Return neighbors of sommet in G;\\
-    \caption{Welsh-Powell Coloring}
+        \caption{Welsh-Powell Coloring}
+
+\end{algorithm}
+\begin{algorithm}[H]
+    \KwIn{
+      \begin{itemize}
+        \item \texttt{G}: Adjacency list representing the graph
+      \end{itemize}
+    }
+    \KwOut{
+      \begin{itemize}
+        \item \texttt{result}: List of colors of the vertices
+      \end{itemize}
+    }
+
+    \SetAlgoLined
+    \SetNoFillComment
+    
+    Function WelshPowell(G):\\
+    \hspace{2em} couleurs $\leftarrow$ {0,1,2,3,4,5} ;\\
+    \hspace{2em} Ma $\leftarrow$ MAdjacence(G);\\
+    \hspace{2em} sommets $\leftarrow$ Sommets(G);\\
+    \hspace{2em} degres, result $\leftarrow$ emptyArray, emptyArray ;\\
+    \hspace{2em} nb = 0; \tcp{Counter for assigning colors}\\
+    \hspace{2em} \For{$sommet$ in sommets}{
+        \hspace{4em} degres.append(len(Voisinage(G,sommet)));\\
+        \hspace{4em} result.append(0);\\
+        }
+        \hspace{2em} degres, sommets $\leftarrow$ zip(*sorted(zip(degres, sommets)));\tcp{Sort vertices based on their degrees in descending order}\\
+
+        \hspace{2em} \For{$i$ from 0 to len(degres)-1}{\tcp{Assign colors to vertices}
+            \hspace{4em} \If{result[i] == 0}{
+                \hspace{6em} nb $\leftarrow$ nb + 1;\\
+                \hspace{6em} result[i] $\leftarrow$ couleurs[nb];\\
+            }
+                \hspace{6em} \For{$j$ from i+1 to len(degres)-1}{
+                    \hspace{8em} \If{result[j] == 0 and Ma[sommets[i]][sommets[j]] == 0}{
+                        \hspace{10em} \For{$k$ from 0 to len(degres) -1}{
+                            \hspace{12em} passe $\leftarrow$ 0;\\
+                            \hspace{12em} \If{Ma[sommets[j]][sommets[k]] == 1 and result[k] == result[i]}{
+                                \hspace{14em} passe $\leftarrow$ 1;\\
+                                \hspace{14em} break;\\
+                            }
+                        }
+                        \hspace{10em} \If{passe == 0}{i
+                            \hspace{12em} result[j] $\leftarrow$ result[i];\\
+                        }
+                    }
+                }
+            }
+            \tcp{Create a dictionary with the vertices as keys and their corresponding colors as values}
+        \hspace{2em}d, i $\leftarrow$ emptySet, 0;\\
+        \hspace{2em}\For {$sommet$ in sommets}{
+
+        \hspace{4em} d[sommet] $\leftarrow$ result[i];\\
+        \hspace{4em} i $\leftarrow$ i + 1;\\
+        }
+        \hspace{2em}\Return d;\\
+
+
+
+    \caption{Welsh-Powell Coloring (continued)}} 
 
 \end{algorithm}
 \begin{note}
     \item La complexité dépend du nombre de sommets dans le graphe. Si $V$ est le nombre de sommets, la complexité serait de l'ordre de $O(V^2)$.
 \end{note}
+\newpage
+\subsection*{Algorithme de coloration par backtracking }
 
+Structures de données utilisées:
+\begin{itemize}
+  \item \texttt{self.V} : Le nombre de sommets dans le graphe
+ \item \texttt{self.graph} :Une matrice d'adjacence représentant le graphe.
+\end{itemize}
+
+\hspace{-4em}Primitives utilisées :
+\begin{itemize}
+    \item \texttt{init} :     Initialisation de la classe Graph avec le nombre de sommets (vertices).
+    Création d'une matrice d'adjacence self.graph initialisée à zéro.
+  \item \texttt{isSafe} :     Vérifie si la couleur c peut être attribuée au sommet v sans violer les contraintes de couleur adjacentes.
+    Parcourt les voisins du sommet v et vérifie si la couleur c est déjà attribuée à l'un d'entre eux.
+
+  \item \texttt{addEdge} : Ajoute une arête entre les sommets u et v en modifiant la matrice d'adjacence.
+  \item \texttt{graphColourUtil} :     Fonction récursive principale pour résoudre le problème de coloration du graphe.
+    Attribue les couleurs aux sommets de manière récursive en utilisant la recherche de profondeur.
+  \item \texttt{graphColouring} :     Initialise la couleur avec 1.
+    Utilise une boucle while pour incrémenter le nombre de couleurs (m) jusqu'à ce que la coloration soit possible.
+    Retourne la liste des couleurs attribuées aux sommets du graphe.
+\end{itemize}
+
+\begin{algorithm}[H]
+    \KwIn{
+      \begin{itemize}
+        \item \texttt{G}: An graph
+      \end{itemize}
+    }
+    \KwOut{
+      \begin{itemize}
+        \item \texttt{result}: List of colors of the vertices
+      \end{itemize}
+    }
+    function init(self, vertices):\\
+    \hspace{2em} self.V $\leftarrow$ vertices;\\
+    \hspace{2em} self.graph $\leftarrow$ {0, 0, ..., 0} matrix of size vertices $\times$ vertices;\\
+
+    \tcp{ # A utility function to check
+    # if the current color assignment
+    # is safe for vertex v
+}
+    function isSafe(self, v, colour, c):\\
+    \hspace{2em} \For{$i$ from 0 to self.V-1}{
+        \hspace{4em} \If{self.graph[v][i] == 1 and colour[i] == c}{\hspace{6em} return False;}
+    }
+    \hspace{2em} \Return True;\\
+    
+    function addEdge(self, u, v):\\
+    \hspace{2em} self.graph[u][v] $\leftarrow$ 1;\\
+    \hspace{2em} self.graph[v][u] $\leftarrow$ 1;\\
+
+    \tcp{# A recursive utility function to solve m
+    # coloring problem
+}
+    function graphColourUtil(self, m, colour, v):\\
+    \hspace{2em} \If{v == self.V}{\hspace{4em} return True;}
+    \hspace{2em} \For{$c$ from 1 to m}{
+        \hspace{4em} \If{self.isSafe(v, colour, c)}{\hspace{6em} colour[v] $\leftarrow$ c;\\
+        \hspace{6em} \If{self.graphColourUtil(m, colour, v+1)}{\hspace{8em} return True;}
+        \hspace{6em} colour[v] $\leftarrow$ 0;}
+    }
+    
+    def graphColouring(self):\\
+    \hspace{2em} m $\leftarrow$ 1;\\
+    \hspace{2em} colour $\leftarrow$ {0, 0, ..., 0} list of size self.V;\\
+    \hspace{2em} \While{self.graphColourUtil(m, colour, 0) == False}{\hspace{4em} m $\leftarrow$ m + 1;\\
+        \hspace{4em} colour $\leftarrow$ {0, 0, ..., 0} list of size self.V;}
+    \hspace{2em} \Return colour;\\
+    \SetAlgoLined
+    \SetNoFillComment
+       \caption{Backtracking Coloring}
+
+\end{algorithm}
+\begin{note}
+    La complexité de l'algorithme de coloration de graphe backtracking  est exponentielle dans le pire des cas. Plus précisément, la complexité de cet algorithme est O($m^V$), où m est le nombre de couleurs et V est le nombre de sommets dans le graphe.
+\end {note}
+
+\newpage
+\chapter{}
+\section*{La composition de notre projet }
+\addcontentsline{toc}{section}{La composition de notre projet }
+\hspace{2em}Notre projet est composé de 6 blocks principaux.
+\subsection*{Le premier block (graph tools) }
+\hspace{2em} Ce bloc de code regroupe les fonctions permettant de créer, de modifier et de visualiser un graphe. Tous nos tests sont effectués sur les structures graph\_matrice\_adjacence et graph\_liste\_adjacence, à l'exception du sudoku. Nous vous recommandons ainsi de modifier la structure graph\_matrice\_adjacence si vous souhaitez tester les algorithmes sur un graphe différent. De plus, la structure graph\_matrice\_adjacence définie par défaut est un graphe en couronne, offrant ainsi une mise à l'épreuve complète des algorithmes et de leur réussite ou échec.
+\subsection*{Les trois prochains blocks 2-4  (coloring tools) }
+\hspace{2em}Ces blocs renferment les algorithmes de coloration de graphe. De plus, ils contiennent du code commenté permettant de tester les algorithmes. Lorsque vous souhaitez effectuer des tests, vous pouvez décommenter le code et l'exécuter. Cependant, veillez à le recommenter par la suite afin d'éviter tout conflit avec d'autres algorithmes et une surcharge de la mémoire.
+\textcolor{red}{N'oubliez surtout pas que si vous souhaitez changer le graphe, il vous suffit de modifier la structure graph\_matrice\_adjacence.}
+\subsection*{Le cinquième block (modify\_graph\_dynamically) }
+\hspace{2em} Ce bloc de code contient des fonctions permettant de modifier dynamiquement le graphe, c'est-à-dire de le modifier de manière aléatoire. Ainsi, il peut ajouter un nœud, une arête, ne rien faire, retirer un nœud, une arête, ajouter des voisins à un nœud, ou retirer des voisins à un nœud.
+\\Le commentaire associé est :\\ \hspace{2em}"""
+observe\_graph\_evolution(graph\_liste\_adjacence, 4)
+""" \\Vous pouvez modifier le chiffre 4 par le nombre de modifications que vous souhaitez apporter au graphe.
+\subsection*{Le sixième block (sudoku) }
+\hspace{2em}Ce bloc de code contient des fonctions permettant de résoudre un sudoku. Un sudoku de base est déjà fourni, mais si vous souhaitez effectuer rapidement des tests, veuillez le modifier (sudoku9) et décommenter la partie nécessaire. L'affichage montre le sudoku non rempli, puis le sudoku rempli.
+Vous pouvez également entrer votre propre sudoku en décommentant la première partie et en saisissant votre sudoku ligne par ligne, en utilisant des 0 pour les valeurs inexistantes. Le temps d'exécution est intéressant à observer ; vous pouvez utiliser la fonction `time` avant de l'exécuter dans le terminal.
+\begin{note}
+    \textcolor{red}{N'oubliez surtout pas que si vous voulez changer le graphe il vous suffit de changer graph\_matrice\_adjacence.}
+    \textcolor{red}{N'oubliez pas d'installer toutes les bibliothèques pour que le projet fonctionne, c'est a dire "math", "networkx", "matplotlib", "random", "numpy".}
+\end{note}
+\newpage
+\chapter{}
+\section*{}
+\addcontentsline{toc}{section}{Conclusion }
+\subsection*{Conclusion}
+\hspace{2em}En conclusion, notre projet explore le passionnant domaine de l'algorithmique des graphes, mettant en lumière divers aspects allant de la théorie pure à des applications pratiques. L'étude des coloriages de graphes nous a plongés dans un monde riche en culture mathématique, avec des défis intrigants tels que le problème des quatre couleurs et des conjectures célèbres.\\
+\hspace{2em}D'un point de vue utilitaire, les algorithmes de coloration de graphes présentés trouvent des applications dans des domaines variés tels que l'informatique, les réseaux de télécommunications, et la biologie. La capacité à modéliser et résoudre des problèmes complexes à l'aide de ces algorithmes offre des perspectives intéressantes pour résoudre des défis du monde réel.\\
+\hspace{2em}En examinant les différentes approches, de l'algorithme glouton à la coloration par backtracking, nous avons pu apprécier la diversité des méthodes pour aborder le problème de la coloration de graphes. Chaque algorithme a ses avantages et inconvénients, et le choix dépend souvent du contexte spécifique et des contraintes du problème.\\
+\hspace{2em}En outre, notre projet propose des outils flexibles pour créer, modifier et visualiser des graphes, ainsi que des fonctions pour résoudre des sudokus. Ces fonctionnalités offrent une expérience complète pour explorer et expérimenter avec les concepts abordés.\\
+\hspace{2em}En résumé, notre projet offre une plongée approfondie dans l'algorithmique des graphes, illustrant la synergie entre la culture mathématique et les applications pratiques. Nous espérons que ce rapport et le code associé serviront de ressources utiles pour ceux qui souhaitent approfondir leur compréhension de ce domaine passionnant.\\
 
 \end{document}
+
 

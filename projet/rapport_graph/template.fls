@@ -1536,6 +1536,10 @@ INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/newtx/stxscr.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/vf/public/newpx/zplmia.vf
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/newpx/pxmiaX.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/newtx/txmiaSTbb.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/vf/public/newpx/zplmi.vf
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/newpx/NewPXMI_gnu.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/newpx/NewPXMI.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/newtx/stxscr.tfm
 INPUT template.aux
 INPUT /home/killiann/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1000.600pk
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/newpx/NewPXMI.pfb

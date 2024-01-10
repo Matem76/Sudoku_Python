@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2023.12.20)  22 DEC 2023 10:51
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2023.12.20)  28 DEC 2023 12:58
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1239,11 +1239,14 @@ Overfull \hbox (10.9612pt too wide) in paragraph at lines 24--24
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
 
 LaTeX Font Warning: Font shape `OT1/cmr/bx/sc' undefined
-(Font)              using `OT1/cmr/bx/n' instead on input line 27.
+(Font)              using `OT1/cmr/bx/n' instead on input line 26.
 
 Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
 (./template.toc
+Missing character: There is no ; in font nullfont!
+Missing character: There is no ; in font nullfont!
+Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
 )
 \tf@toc=\write5
@@ -1252,7 +1255,7 @@ Missing character: There is no ; in font nullfont!
 pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.29 \end
+l.28 \end
          {titlepage} [1
 
 ]
@@ -1260,59 +1263,173 @@ Chapter 1.
 pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.51 \newpage
+l.50 \newpage
               [1
 
 ]
+Chapter 2.
 
 LaTeX Font Warning: Font shape `OT1/cmr/m/n' in size <5.5> not available
-(Font)              size <5> substituted on input line 90.
+(Font)              size <5> substituted on input line 89.
 
 
-Overfull \hbox (15.0pt too wide) detected at line 105
+Overfull \hbox (15.0pt too wide) detected at line 104
 [][] 
  []
 
 
-./template.tex:107: LaTeX Error: Lonely \item--perhaps a missing list environment.
+./template.tex:106: LaTeX Error: Lonely \item--perhaps a missing list environment.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.107     \item L
+l.106     \item L
                  a complexité dépend du nombre de sommets et des arêtes  ...
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
 
-Underfull \hbox (badness 10000) detected at line 107
+Underfull \hbox (badness 10000) detected at line 106
 [][]
  []
 
-[2]
-Overfull \hbox (15.0pt too wide) detected at line 163
+[2
+
+] [3]
+Overfull \hbox (15.0pt too wide) detected at line 162
 [][] 
  []
 
 
-./template.tex:165: LaTeX Error: Lonely \item--perhaps a missing list environment.
+./template.tex:183: LaTeX Error: There's no line here to end.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.165     \item L
+l.183 ...= 0; \tcp{Counter for assigning colors}\\
+                                                  
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+./template.tex:188: LaTeX Error: There's no line here to end.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.188 ...d on their degrees in descending order}\\
+                                                  
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+Overfull \hbox (17.22221pt too wide) detected at line 223
+[][] 
+ []
+
+./template.tex:223: Extra }, or forgotten \endgroup.
+\@algocf@finish ... {\skipalgocfslide }}{}\egroup 
+                                                  \end {lrbox}\algocf@maketh...
+l.223 \end{algorithm}
+                     
+I've deleted a group-closing symbol because it seems to be
+spurious, as in `$x}$'. But perhaps the } is legitimate and
+you forgot something else, as in `\hbox{$x}'. In such cases
+the way to recover is to insert both the forgotten and the
+deleted material, e.g., by typing `I$}'.
+
+
+./template.tex:225: LaTeX Error: Lonely \item--perhaps a missing list environment.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.225     \item L
                  a complexité dépend du nombre de sommets dans le graphe. ...
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
 
-Underfull \hbox (badness 10000) detected at line 165
+Underfull \hbox (badness 10000) detected at line 225
 [][]
  []
 
-[3] (./template.aux)
+[4] [5]
+./template.tex:269: You can't use `macro parameter character #' in horizontal mode.
+<argument> \strut \ignorespaces  ##
+                                    A utility function to check ## if the cu...
+l.269 }
+       
+Sorry, but I'm not programmed to handle this case;
+I'll just pretend that you didn't ask for it.
+If you're in the wrong mode, you might be able to
+return to the right one by typing `I}' or `I$' or `I\par'.
+
+./template.tex:269: You can't use `macro parameter character #' in horizontal mode.
+<argument> ...s  ## A utility function to check ##
+                                                   if the current color assi...
+l.269 }
+       
+Sorry, but I'm not programmed to handle this case;
+I'll just pretend that you didn't ask for it.
+If you're in the wrong mode, you might be able to
+return to the right one by typing `I}' or `I$' or `I\par'.
+
+./template.tex:269: You can't use `macro parameter character #' in horizontal mode.
+<argument> ...# if the current color assignment ##
+                                                   is safe for vertex v \str...
+l.269 }
+       
+Sorry, but I'm not programmed to handle this case;
+I'll just pretend that you didn't ask for it.
+If you're in the wrong mode, you might be able to
+return to the right one by typing `I}' or `I$' or `I\par'.
+
+./template.tex:282: You can't use `macro parameter character #' in horizontal mode.
+<argument> \strut \ignorespaces ##
+                                   A recursive utility function to solve m #...
+l.282 }
+       
+Sorry, but I'm not programmed to handle this case;
+I'll just pretend that you didn't ask for it.
+If you're in the wrong mode, you might be able to
+return to the right one by typing `I}' or `I$' or `I\par'.
+
+./template.tex:282: You can't use `macro parameter character #' in horizontal mode.
+<argument> ...rsive utility function to solve m ##
+                                                   coloring problem \strut \...
+l.282 }
+       
+Sorry, but I'm not programmed to handle this case;
+I'll just pretend that you didn't ask for it.
+If you're in the wrong mode, you might be able to
+return to the right one by typing `I}' or `I$' or `I\par'.
+
+
+Overfull \hbox (15.0pt too wide) detected at line 301
+[][] 
+ []
+
+[6] [7]
+Chapter 3.
+[8
+
+]
+Chapter 4.
+
+Underfull \hbox (badness 10000) in paragraph at lines 333--338
+
+ []
+
+[9
+
+] (./template.aux)
 
 LaTeX Font Warning: Size substitutions with differences
 (Font)              up to 0.5pt have occurred.
@@ -1322,18 +1439,18 @@ LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
  ) 
 Here is how much of TeX's memory you used:
- 36949 strings out of 480171
- 737192 string characters out of 5894488
- 1103395 words of memory out of 5000000
- 54168 multiletter control sequences out of 15000+600000
- 497568 words of font info for 109 fonts, out of 8000000 for 9000
+ 37065 strings out of 480171
+ 738737 string characters out of 5894488
+ 1107685 words of memory out of 5000000
+ 54197 multiletter control sequences out of 15000+600000
+ 498438 words of font info for 112 fonts, out of 8000000 for 9000
  59 hyphenation exceptions out of 8191
- 96i,18n,102p,818b,1723s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 96i,24n,102p,818b,1723s stack positions out of 5000i,500n,10000p,200000b,80000s
  </home/killiann/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1000.600pk></usr/share/texlive/texmf-dist/fonts/type1/public/newpx/NewPXMI.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/newpx/NewPXMI_gnu.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/newpx/pxmiaX.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/newpx/pxsys.pfb>
-Output written on template.pdf (5 pages, 165290 bytes).
+Output written on template.pdf (11 pages, 195412 bytes).
 PDF statistics:
- 240 PDF objects out of 1000 (max. 8388607)
- 171 compressed objects within 2 object streams
- 62 named destinations out of 1000 (max. 500000)
- 213 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 393 PDF objects out of 1000 (max. 8388607)
+ 307 compressed objects within 4 object streams
+ 146 named destinations out of 1000 (max. 500000)
+ 269 words of extra memory for PDF output out of 10000 (max. 10000000)
 
